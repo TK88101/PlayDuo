@@ -1,0 +1,5 @@
+# 各自の接続設定（config.sample.php をコピーして作る）
+config/config.php
+
+# macOS
+.DS_Store
