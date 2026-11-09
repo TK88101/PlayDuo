@@ -2,6 +2,26 @@
 
 declare(strict_types=1);
 
+// 環境変数 PLAYDUO_DB_* があれば config.php の値を上書きする（テスト時だけ設定。Apache では未設定）
+const DB_ENV_OVERRIDES = [
+    'PLAYDUO_DB_HOST'     => 'host',
+    'PLAYDUO_DB_NAME'     => 'name',
+    'PLAYDUO_DB_USER'     => 'user',
+    'PLAYDUO_DB_PASSWORD' => 'password',
+];
+
+function db_settings(array $fileConfig, array $env): array
+{
+    $settings = $fileConfig;
+    foreach (DB_ENV_OVERRIDES as $envKey => $configKey) {
+        $value = $env[$envKey] ?? '';
+        if (is_string($value) && $value !== '') {
+            $settings[$configKey] = $value;
+        }
+    }
+    return $settings;
+}
+
 // DB 接続は全画面でこの関数を使う（SQL は必ずプリペアドステートメントで実行する）
 function db(): PDO
 {
@@ -14,7 +34,7 @@ function db(): PDO
     if (!is_file($configPath)) {
         throw new RuntimeException('config/config.php がありません。config.sample.php をコピーして作成してください。');
     }
-    $db = (require $configPath)['db'];
+    $db = db_settings((require $configPath)['db'], getenv());
 
     $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', $db['host'], $db['name'], $db['charset']);
     $pdo = new PDO($dsn, $db['user'], $db['password'], [
