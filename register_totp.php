@@ -2,7 +2,7 @@
 // U17 認証アプリ設定（6 桁の確認が通ってから会員を登録する）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = '認証アプリの設定';
 
@@ -15,6 +15,7 @@ if (is_post()) {
     $result = register_member(db(), $_SESSION['register'], post_string($_POST, 'totp_code'), time());
     if ($result['status'] === 'ok') {
         unset($_SESSION['register']);
+        // 復旧コードを置く前に ID を作り直す（register_done は消したくないので ID だけ）
         session_regenerate_id(true);
         $_SESSION['register_done'] = ['recovery_codes' => $result['recovery_codes']];
         redirect('register_recovery.php');

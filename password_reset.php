@@ -2,7 +2,7 @@
 // U14 パスワード再設定（本人確認：メール＋認証アプリの 6 桁 または 復旧コード）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = 'パスワード再設定';
 

@@ -2,7 +2,7 @@
 // U06 ログイン（U06-a エラー／U06-b ロック中）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = 'ログイン';
 $locked = false;

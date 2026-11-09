@@ -2,7 +2,7 @@
 // U04 会員登録
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = '会員登録';
 
@@ -15,6 +15,7 @@ if (is_post()) {
     }
     if ($errors === []) {
         // これから秘密鍵・復旧コードを session に置くので、ID を作り直して固定化を防ぐ
+        // （renew_session_for_auth() は登録の途中状態まで消すので、ここでは ID だけ作り直す）
         session_regenerate_id(true);
         // 平文のパスワードは session に置かない
         $_SESSION['register'] = [

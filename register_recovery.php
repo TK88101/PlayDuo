@@ -2,7 +2,7 @@
 // U18 復旧コード表示（この画面で 1 回だけ表示する）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = '復旧コード';
 

@@ -2,7 +2,7 @@
 // U05 会員登録確認
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = '会員登録確認';
 

@@ -20,11 +20,13 @@ set_exception_handler(static function (Throwable $e): void {
 });
 
 start_app_session();
+send_frame_deny_headers();
 
 $csrf_token = csrf_token($_SESSION);
 $login_member = null;
-if (current_member_id($_SESSION) !== null) {
-    $login_member = find_login_member(db(), current_member_id($_SESSION));
+$member_id = current_member_id($_SESSION);
+if ($member_id !== null) {
+    $login_member = find_login_member(db(), $member_id);
     if ($login_member === null) {
         // 退会済みなど：ログイン状態を残さない
         unset($_SESSION['member_id']);

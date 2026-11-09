@@ -2,7 +2,7 @@
 // U15 パスワード再設定（新パスワード）。U14 の本人確認から 10 分以内・1 回限り
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_auth_page_headers();
+send_no_store_headers();
 
 $page_title = 'パスワード再設定';
 $now = time();

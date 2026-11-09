@@ -77,11 +77,16 @@ function renew_session_for_auth(): void
     unset($_SESSION['csrf_token']);
 }
 
-// 認証まわりの画面：ブラウザ・履歴に残さず、他サイトの iframe にも入れさせない
-function send_auth_page_headers(): void
+// 認証まわりの画面はブラウザ・履歴に残さない
+function send_no_store_headers(): void
 {
     header('Cache-Control: no-store, no-cache, must-revalidate');
     header('Pragma: no-cache');
+}
+
+// 全画面共通：他サイトの iframe に入れさせない（クリックジャッキング対策）
+function send_frame_deny_headers(): void
+{
     header('X-Frame-Options: DENY');
     header("Content-Security-Policy: frame-ancestors 'none'");
 }
