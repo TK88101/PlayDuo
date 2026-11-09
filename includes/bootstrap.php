@@ -9,11 +9,27 @@ require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/validation.php';
 require_once __DIR__ . '/auth.php';
 
+// 想定外の例外：ログには種類と場所だけ残し（引数は残さない）、画面には詳細を出さない
+set_exception_handler(static function (Throwable $e): void {
+    error_log(sprintf('[playduo] %s: %s at %s:%d', $e::class, $e->getMessage(), $e->getFile(), $e->getLine()));
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: text/plain; charset=UTF-8');
+    }
+    echo 'エラーが発生しました。時間をおいてからもう一度お試しください。';
+});
+
 start_app_session();
 
 $csrf_token = csrf_token($_SESSION);
-$member_id = current_member_id($_SESSION);
-$login_member = $member_id === null ? null : find_member_by_id(db(), $member_id);
+$login_member = null;
+if (current_member_id($_SESSION) !== null) {
+    $login_member = find_login_member(db(), current_member_id($_SESSION));
+    if ($login_member === null) {
+        // 退会済みなど：ログイン状態を残さない
+        unset($_SESSION['member_id']);
+    }
+}
 $errors = [];
 $old = [];
 $message = flash_take($_SESSION);

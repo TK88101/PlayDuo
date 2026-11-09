@@ -160,12 +160,12 @@ final class AuthFlowTest extends TestCase
     public function testLoginRegeneratesSessionAndSetsSecureCookieFlags(): void
     {
         $this->registerMember();
-        $before = $this->client->cookies()['PHPSESSID'] ?? '';
+        $before = $this->client->cookies()['PLAYDUO_SID'] ?? '';
 
         $res = $this->login($this->client, self::PASSWORD);
 
         self::assertRedirect($res, 'index.php');
-        $after = $this->client->cookies()['PHPSESSID'] ?? '';
+        $after = $this->client->cookies()['PLAYDUO_SID'] ?? '';
         self::assertNotSame($before, $after);
         $setCookie = implode("\n", $res->headers('set-cookie'));
         self::assertStringContainsStringIgnoringCase('HttpOnly', $setCookie);
@@ -274,6 +274,27 @@ final class AuthFlowTest extends TestCase
 
         $fields = ['csrf_token' => $token, 'new_password' => 'newpass99', 'new_password_confirm' => 'newpass99'];
         self::assertRedirect($this->client->post('password_reset_new.php', $fields), 'login.php');
+        // 認可は 1 回で消えるので、同じ送信の繰り返しは本人確認（U14）へ戻される
         self::assertRedirect($this->client->post('password_reset_new.php', $fields), 'password_reset.php');
+    }
+
+    public function testAuthPagesForbidFramingAndCaching(): void
+    {
+        foreach (['register.php', 'login.php', 'password_reset.php'] as $page) {
+            $res = $this->client->get($page);
+            self::assertSame('DENY', $res->header('x-frame-options'), $page);
+            self::assertStringContainsString('no-store', (string) $res->header('cache-control'), $page);
+        }
+    }
+
+    public function testWithdrawnMemberIsLoggedOutOnNextRequest(): void
+    {
+        $this->registerMember();
+        $this->login($this->client, self::PASSWORD);
+        self::assertStringContainsString('action="logout.php"', $this->client->get('login.php')->body);
+
+        $this->pdo->exec('UPDATE members SET withdrawal_flag = 1');
+
+        self::assertStringNotContainsString('action="logout.php"', $this->client->get('login.php')->body);
     }
 }

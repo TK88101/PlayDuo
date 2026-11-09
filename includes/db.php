@@ -22,6 +22,27 @@ function db_settings(array $fileConfig, array $env): array
     return $settings;
 }
 
+/**
+ * $work をトランザクションの中で実行する。例外が出たら取り消して投げ直す。
+ * @template T
+ * @param callable(): T $work
+ * @return T
+ */
+function db_transaction(PDO $pdo, callable $work): mixed
+{
+    $pdo->beginTransaction();
+    try {
+        $result = $work();
+        $pdo->commit();
+        return $result;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+}
+
 // DB 接続は全画面でこの関数を使う（SQL は必ずプリペアドステートメントで実行する）
 function db(): PDO
 {

@@ -2,7 +2,7 @@
 // U04 会員登録
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_no_store_headers();
+send_auth_page_headers();
 
 $page_title = '会員登録';
 
@@ -14,6 +14,8 @@ if (is_post()) {
         $errors['email'] = 'このメールアドレスは登録済みです';
     }
     if ($errors === []) {
+        // これから秘密鍵・復旧コードを session に置くので、ID を作り直して固定化を防ぐ
+        session_regenerate_id(true);
         // 平文のパスワードは session に置かない
         $_SESSION['register'] = [
             'input'         => $result['input'],
@@ -26,7 +28,7 @@ if (is_post()) {
     $old = register_old_from_input($_SESSION['register']['input']);
 }
 
-$this_year = (int) substr(db_datetime(time()), 0, 4);
+$this_year = (int) substr(today_string(time()), 0, 4);
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
 <h1>会員登録</h1>

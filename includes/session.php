@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 const CSRF_TOKEN_BYTES = 32;
+// 同じ XAMPP の他の練習アプリ（既定の PHPSESSID）とセッションを共有しない
+const SESSION_NAME = 'PLAYDUO_SID';
 
 // 登録・再設定の途中状態（ログイン／ログアウトのたびに消す）
 const AUTH_FLOW_KEYS = ['register', 'register_done', 'password_reset'];
@@ -14,6 +16,7 @@ function start_app_session(): void
     }
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
+    session_name(SESSION_NAME);
     session_set_cookie_params([
         'lifetime' => 0,
         'path'     => '/',
@@ -66,11 +69,21 @@ function clear_auth_flows(array &$session): void
     }
 }
 
-// 認証まわりの画面はブラウザ・履歴に残さない
-function send_no_store_headers(): void
+// ログイン・本人確認など権限が変わるとき：途中状態を消し、session ID と CSRF トークンを作り直す
+function renew_session_for_auth(): void
+{
+    clear_auth_flows($_SESSION);
+    session_regenerate_id(true);
+    unset($_SESSION['csrf_token']);
+}
+
+// 認証まわりの画面：ブラウザ・履歴に残さず、他サイトの iframe にも入れさせない
+function send_auth_page_headers(): void
 {
     header('Cache-Control: no-store, no-cache, must-revalidate');
     header('Pragma: no-cache');
+    header('X-Frame-Options: DENY');
+    header("Content-Security-Policy: frame-ancestors 'none'");
 }
 
 // ログアウト：session の中身・cookie・サーバ側データをすべて消す

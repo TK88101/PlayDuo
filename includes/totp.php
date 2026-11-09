@@ -64,10 +64,15 @@ function totp_code(string $secret, int $step): string
     return str_pad((string) ($value % (10 ** TOTP_DIGITS)), TOTP_DIGITS, '0', STR_PAD_LEFT);
 }
 
-// 一致した時間ステップを返す（無ければ null）。同じコードの再利用拒否は DB 側（totp_last_step）で行う
-function totp_match_step(string $secret, string $code, int $now): ?int
+function is_totp_code_format(string $code): bool
 {
-    if (preg_match('/\A\d{' . TOTP_DIGITS . '}\z/', $code) !== 1) {
+    return preg_match('/\A\d{' . TOTP_DIGITS . '}\z/', $code) === 1;
+}
+
+// 一致した時間ステップを返す（無ければ null）。同じコードの再利用拒否は DB 側（totp_last_step）で行う
+function totp_match_step(string $secret, #[\SensitiveParameter] string $code, int $now): ?int
+{
+    if (!is_totp_code_format($code)) {
         return null;
     }
     $current = totp_step($now);

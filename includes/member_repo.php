@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 // members / recovery_codes の DB 操作。SQL はここに集める（山﨑版 DB と差があっても直す場所を限定するため）
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/db.php';
 
 // ---- ロックの決まり（ログインとパスワード再設定で共通のカウンタ） ----
 const MAX_LOGIN_FAILURES = 5;
@@ -30,6 +31,15 @@ function effective_failure_count(array $member, int $now): int
 function find_member_by_id(PDO $pdo, int $memberId): ?array
 {
     $stmt = $pdo->prepare('SELECT * FROM members WHERE member_id = ? AND withdrawal_flag = 0');
+    $stmt->execute([$memberId]);
+    $row = $stmt->fetch();
+    return $row === false ? null : $row;
+}
+
+// ヘッダー表示用（$login_member）。パスワードや秘密鍵は画面に渡さない
+function find_login_member(PDO $pdo, int $memberId): ?array
+{
+    $stmt = $pdo->prepare('SELECT member_id, name, nickname FROM members WHERE member_id = ? AND withdrawal_flag = 0');
     $stmt->execute([$memberId]);
     $row = $stmt->fetch();
     return $row === false ? null : $row;
@@ -78,8 +88,7 @@ function unused_recovery_codes(PDO $pdo, int $memberId): array
 function create_member_with_codes(PDO $pdo, array $data, array $codeHashes, int $now): int
 {
     $createdAt = db_datetime($now);
-    $pdo->beginTransaction();
-    try {
+    return db_transaction($pdo, static function () use ($pdo, $data, $codeHashes, $createdAt): int {
         $stmt = $pdo->prepare(
             'INSERT INTO members (name, email, password, birth_date, nickname, phone, totp_secret, totp_last_step, created_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -94,12 +103,8 @@ function create_member_with_codes(PDO $pdo, array $data, array $codeHashes, int 
         foreach ($codeHashes as $hash) {
             $codeStmt->execute([$memberId, $hash, $createdAt]);
         }
-        $pdo->commit();
         return $memberId;
-    } catch (Throwable $e) {
-        $pdo->rollBack();
-        throw $e;
-    }
+    });
 }
 
 // ---- 1 回限りの消費（条件付き UPDATE。影響行数 1 のときだけ成功＝同じコードは二度通らない） ----
@@ -142,4 +147,12 @@ function update_password_hash(PDO $pdo, int $memberId, string $passwordHash): vo
 {
     $stmt = $pdo->prepare('UPDATE members SET password = ? WHERE member_id = ?');
     $stmt->execute([$passwordHash, $memberId]);
+}
+
+// ハッシュ形式の更新。照合したときのハッシュのままのときだけ置き換える（同時の再設定を上書きしない）
+function rehash_password_if_unchanged(PDO $pdo, int $memberId, string $verifiedHash, string $newHash): bool
+{
+    $stmt = $pdo->prepare('UPDATE members SET password = ? WHERE member_id = ? AND password = ?');
+    $stmt->execute([$newHash, $memberId, $verifiedHash]);
+    return $stmt->rowCount() === 1;
 }

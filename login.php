@@ -2,7 +2,7 @@
 // U06 ログイン（U06-a エラー／U06-b ロック中）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_no_store_headers();
+send_auth_page_headers();
 
 $page_title = 'ログイン';
 $locked = false;
@@ -12,8 +12,7 @@ if (is_post()) {
     $email = trim_all(post_string($_POST, 'email'));
     $result = attempt_login(db(), $email, post_string($_POST, 'password'), time());
     if ($result['status'] === 'ok') {
-        clear_auth_flows($_SESSION);
-        session_regenerate_id(true);
+        renew_session_for_auth();
         $_SESSION['member_id'] = $result['member_id'];
         redirect('index.php');
     }

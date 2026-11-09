@@ -1,0 +1,6 @@
+# 開発用のファイルは Web から見せない（Apache 用。php -S には効かない）
+RedirectMatch 404 "/(vendor|tests|sql|docs|build|\.git)(/|$)"
+
+<FilesMatch "^(composer\.(json|lock)|phpunit\.xml|README\.md)$">
+    Require all denied
+</FilesMatch>

@@ -144,7 +144,12 @@ function today_string(int $now): string
  * パスワードと確認用の検証（U04 は password/password_confirm、U15 は new_password/new_password_confirm）。
  * @return array<string, string>
  */
-function validate_new_password(string $password, string $confirm, string $field, string $confirmField): array
+function validate_new_password(
+    #[\SensitiveParameter] string $password,
+    #[\SensitiveParameter] string $confirm,
+    string $field,
+    string $confirmField,
+): array
 {
     $errors = [];
     if ($password === '') {
@@ -161,7 +166,7 @@ function validate_new_password(string $password, string $confirm, string $field,
     return $errors;
 }
 
-function is_valid_password_format(string $password): bool
+function is_valid_password_format(#[\SensitiveParameter] string $password): bool
 {
     $pattern = '/\A[\x21-\x7E]{' . PASSWORD_MIN_LENGTH . ',' . PASSWORD_MAX_LENGTH . '}\z/';
     return preg_match($pattern, $password) === 1

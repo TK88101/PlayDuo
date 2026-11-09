@@ -2,13 +2,13 @@
 // U15 パスワード再設定（新パスワード）。U14 の本人確認から 10 分以内・1 回限り
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_no_store_headers();
+send_auth_page_headers();
 
 $page_title = 'パスワード再設定';
 $now = time();
 $auth = $_SESSION['password_reset'] ?? null;
 
-if (!reset_auth_is_valid(is_array($auth) ? $auth : null, $now)) {
+if (!reset_auth_is_valid($auth, $now)) {
     unset($_SESSION['password_reset']);
     flash_set($_SESSION, '本人確認からやり直してください');
     redirect('password_reset.php');
@@ -22,7 +22,7 @@ if (is_post()) {
         $status = complete_password_reset(db(), $auth, $newPassword, $now);
         unset($_SESSION['password_reset']);
         if ($status === 'ok') {
-            session_regenerate_id(true);
+            renew_session_for_auth();
             flash_set($_SESSION, 'パスワードを再設定しました。新しいパスワードでログインしてください');
             redirect('login.php');
         }

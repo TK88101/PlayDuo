@@ -27,7 +27,8 @@ final class MemberRepoTest extends TestCase
     private static function memberData(string $email = 'a@example.com'): array
     {
         return [
-            'name' => '山田 花子', 'email' => $email, 'password_hash' => password_hash('abc12345', PASSWORD_DEFAULT),
+            // ここではハッシュの中身を照合しないので bcrypt を計算しない（テストを速くする）
+            'name' => '山田 花子', 'email' => $email, 'password_hash' => 'hash-old',
             'birth_date' => '2000-01-01', 'nickname' => null, 'phone' => null,
             'totp_secret' => 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ', 'totp_last_step' => 100,
         ];
@@ -36,7 +37,7 @@ final class MemberRepoTest extends TestCase
     /** @return list<string> */
     private static function codeHashes(int $count = 10): array
     {
-        return array_map(static fn (int $i): string => password_hash("CODE{$i}", PASSWORD_DEFAULT), range(1, $count));
+        return array_map(static fn (int $i): string => "code-hash-{$i}", range(1, $count));
     }
 
     public function testCreateMemberWithCodesInsertsMemberAndTenCodes(): void
@@ -118,6 +119,25 @@ final class MemberRepoTest extends TestCase
 
         self::assertNull($found);
         self::assertNull(find_member_by_id($this->pdo, $id));
+    }
+
+    public function testFindLoginMemberReturnsOnlyDisplayColumns(): void
+    {
+        $id = create_member_with_codes($this->pdo, self::memberData(), self::codeHashes(1), self::NOW);
+
+        self::assertSame(['member_id', 'name', 'nickname'], array_keys(find_login_member($this->pdo, $id)));
+        self::assertNull(find_login_member($this->pdo, $id + 1));
+    }
+
+    public function testRehashOnlyReplacesTheHashThatWasVerified(): void
+    {
+        $id = create_member_with_codes($this->pdo, self::memberData(), self::codeHashes(1), self::NOW);
+
+        self::assertTrue(rehash_password_if_unchanged($this->pdo, $id, 'hash-old', 'hash-rehashed'));
+        // 照合後に別の処理（パスワード再設定）で変わっていたら上書きしない
+        update_password_hash($this->pdo, $id, 'hash-from-reset');
+        self::assertFalse(rehash_password_if_unchanged($this->pdo, $id, 'hash-rehashed', 'hash-stale'));
+        self::assertSame('hash-from-reset', find_member_by_id($this->pdo, $id)['password']);
     }
 
     public function testRecordFailureLocksOnFifthAndResetClears(): void

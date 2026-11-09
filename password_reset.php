@@ -2,7 +2,7 @@
 // U14 パスワード再設定（本人確認：メール＋認証アプリの 6 桁 または 復旧コード）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
-send_no_store_headers();
+send_auth_page_headers();
 
 $page_title = 'パスワード再設定';
 
@@ -12,8 +12,7 @@ if (is_post()) {
     $now = time();
     $result = verify_reset_identity(db(), $email, post_string($_POST, 'code'), $now);
     if ($result['status'] === 'ok') {
-        clear_auth_flows($_SESSION);
-        session_regenerate_id(true);
+        renew_session_for_auth();
         // member_id は U15 でリクエストから受け取らず、ここに置いた値だけを使う
         $_SESSION['password_reset'] = [
             'member_id'   => $result['member_id'],
