@@ -2,6 +2,19 @@
 
 declare(strict_types=1);
 
+const APP_TIMEZONE = 'Asia/Tokyo';
+
+// Unix 秒 ⇔ DB の DATETIME 文字列（日本時間）
+function db_datetime(int $timestamp): string
+{
+    return (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone(APP_TIMEZONE))->format('Y-m-d H:i:s');
+}
+
+function db_timestamp(string $datetime): int
+{
+    return (new DateTimeImmutable($datetime, new DateTimeZone(APP_TIMEZONE)))->getTimestamp();
+}
+
 // HTML に値を出すときは必ずこれを通す（XSS 対策）
 function h(string|int|float|null $value): string
 {

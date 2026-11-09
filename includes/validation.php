@@ -11,7 +11,8 @@ const NICKNAME_MIN_LENGTH = 2;
 const NICKNAME_MAX_LENGTH = 20;
 const BIRTH_YEAR_MIN = 1900;
 const PHONE_PATTERN = '/\A\d{3}-?\d{4}-?\d{4}\z/';   // 携帯 xxx-xxxx-xxxx（ハイフン有無どちらも可）
-const APP_TIMEZONE = 'Asia/Tokyo';
+
+require_once __DIR__ . '/functions.php';
 
 function post_string(array $post, string $key): string
 {
@@ -107,7 +108,7 @@ function build_birth_date(array $post, int $now): array
 
 function today_string(int $now): string
 {
-    return (new DateTimeImmutable('@' . $now))->setTimezone(new DateTimeZone(APP_TIMEZONE))->format('Y-m-d');
+    return substr(db_datetime($now), 0, 10);
 }
 
 /**
