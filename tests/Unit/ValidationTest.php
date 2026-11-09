@@ -152,6 +152,25 @@ final class ValidationTest extends TestCase
         self::assertSame([], validate_new_password($max, $max, 'new_password', 'new_password_confirm'));
     }
 
+    public function testRegisterOldValuesKeepsInputButNeverPasswords(): void
+    {
+        $old = register_old_values(self::validPost() + ['extra' => 'x']);
+
+        self::assertSame(['name', 'email', 'birth_year', 'birth_month', 'birth_day', 'nickname', 'phone'], array_keys($old));
+        self::assertSame(' 山田 花子 ', $old['name'], '入力したままの値を戻す');
+    }
+
+    public function testRegisterOldFromInputSplitsBirthDateForSelects(): void
+    {
+        $old = register_old_from_input([
+            'name' => '山田', 'email' => 'a@example.com', 'birth_date' => '2000-02-09', 'nickname' => null, 'phone' => '09012345678',
+        ]);
+
+        self::assertSame(['2000', '2', '9'], [$old['birth_year'], $old['birth_month'], $old['birth_day']]);
+        self::assertSame('', $old['nickname']);
+        self::assertSame('09012345678', $old['phone']);
+    }
+
     public function testPasswordConfirmMismatchIsReportedOnConfirmField(): void
     {
         $errors = validate_new_password('abcd1234', 'abcd1235', 'new_password', 'new_password_confirm');

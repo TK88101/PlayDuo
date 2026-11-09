@@ -259,6 +259,22 @@ final class AuthTest extends TestCase
         self::assertSame('stale', complete_password_reset($this->pdo, $auth, 'newpass99', self::NOW + 10));
     }
 
+    public function testAuthAttemptRollsBackAndRethrowsOnUnexpectedError(): void
+    {
+        $this->registerMember();
+
+        try {
+            run_auth_attempt($this->pdo, 'a@example.com', self::NOW, static function (): bool {
+                throw new \RuntimeException('boom');
+            }, true);
+            self::fail('例外が伝わらなかった');
+        } catch (\RuntimeException $e) {
+            self::assertSame('boom', $e->getMessage());
+        }
+
+        self::assertFalse($this->pdo->inTransaction());
+    }
+
     public function testResetAuthValidity(): void
     {
         $auth = ['member_id' => 1, 'issued_at' => self::NOW, 'password_fp' => 'x'];

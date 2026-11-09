@@ -125,12 +125,13 @@ cp config/config.sample.php config/config.php
 | フォルダ | 内容 |
 |---|---|
 | `config/` | 接続設定（`config.php` は各自で作る） |
-| `includes/` | 共通 PHP（`db.php`＝DB 接続） |
-| `assets/` | ゲーム画像・商品データ |
-| `docs/` | 業務フロー図などの資料 |
+| `/`（ルート） | 利用者画面の PHP（1 画面＝1 ファイル） |
+| `includes/` | 共通 PHP（`db.php`＝DB 接続、`header.php`・`footer.php` など） |
+| `assets/` | ゲーム画像・商品データ・JS |
+| `sql/` | `schema.sql`（テーブル定義）・`seed.sql`（テストデータ） |
+| `tests/` | 自動テスト（PHPUnit） |
+| `docs/` | 業務フロー図・画面と PHP の対応表などの資料 |
 | `tools/` | 開発用ツール（`db_check.php` など） |
-
-画面・CSS・JS・SQL のフォルダは、作り始めるときに追加する。
 
 ## 決まりごと
 
