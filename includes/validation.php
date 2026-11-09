@@ -83,6 +83,35 @@ function validate_register_input(array $post, int $now): array
     ];
 }
 
+// エラーで戻ったときの入力値（パスワードは戻さない）
+const REGISTER_OLD_FIELDS = ['name', 'email', 'birth_year', 'birth_month', 'birth_day', 'nickname', 'phone'];
+
+/** @return array<string, string> */
+function register_old_values(array $post): array
+{
+    $old = [];
+    foreach (REGISTER_OLD_FIELDS as $field) {
+        $old[$field] = post_string($post, $field);
+    }
+    return $old;
+}
+
+// U05 から「修正する」で戻ったとき、保存済みの入力を U04 の欄に戻す
+/** @return array<string, string> */
+function register_old_from_input(array $input): array
+{
+    [$year, $month, $day] = explode('-', (string) $input['birth_date']);
+    return [
+        'name'        => (string) $input['name'],
+        'email'       => (string) $input['email'],
+        'birth_year'  => $year,
+        'birth_month' => (string) (int) $month,
+        'birth_day'   => (string) (int) $day,
+        'nickname'    => (string) ($input['nickname'] ?? ''),
+        'phone'       => (string) ($input['phone'] ?? ''),
+    ];
+}
+
 /** @return array{value: ?string, error: ?string} */
 function build_birth_date(array $post, int $now): array
 {

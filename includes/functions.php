@@ -21,6 +21,20 @@ function h(string|int|float|null $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function is_post(): bool
+{
+    return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+}
+
+// 入力欄の下に出すエラー（$errors に無ければ空文字）
+function error_html(array $errors, string $field): string
+{
+    if (empty($errors[$field])) {
+        return '';
+    }
+    return '<p class="error">' . h($errors[$field]) . '</p>';
+}
+
 // 同じサイト内の画面へ移動して処理を終える（外部 URL は渡さないこと）
 function redirect(string $path): never
 {
