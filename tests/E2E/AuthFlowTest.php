@@ -96,6 +96,8 @@ final class AuthFlowTest extends TestCase
         self::assertSame(10, preg_match_all('/class="recovery-code">/', $page->body));
         self::assertStringContainsString('no-store', (string) $page->header('cache-control'));
         self::assertStringContainsString('name="csrf_token"', $page->body, 'U18 の「次へ」は POST form');
+        self::assertStringContainsString('id="copy-codes"', $page->body);
+        self::assertStringContainsString('id="download-codes"', $page->body);
 
         self::assertRedirect($this->client->get('register_recovery.php'), 'login.php');
         self::assertSame(1, $this->memberCount());
