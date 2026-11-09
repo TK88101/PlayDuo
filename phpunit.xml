@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         executionOrder="default"
+         failOnRisky="true"
+         failOnWarning="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="E2E">
+            <directory>tests/E2E</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">includes</directory>
+        </include>
+    </source>
+    <php>
+        <!-- ローカル専用のテスト DB（権限は playduo_test.* のみ）。開発 DB playduo には触れない -->
+        <env name="PLAYDUO_DB_HOST" value="127.0.0.1" force="true"/>
+        <env name="PLAYDUO_DB_NAME" value="playduo_test" force="true"/>
+        <env name="PLAYDUO_DB_USER" value="playduo_test" force="true"/>
+        <env name="PLAYDUO_DB_PASSWORD" value="playduo_test" force="true"/>
+    </php>
+</phpunit>

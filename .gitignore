@@ -3,3 +3,8 @@ config/config.php
 
 # macOS
 .DS_Store
+
+# Composer / テスト生成物
+vendor/
+build/
+.phpunit.cache/
