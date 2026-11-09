@@ -1,5 +1,7 @@
 # 開発用のファイルは Web から見せない（Apache 用。php -S には効かない）
-RedirectMatch 404 "/(vendor|tests|sql|docs|build|\.git)(/|$)"
+# このフォルダ直下からの相対パスで判定する（assets/js/vendor/ などは対象外）
+RewriteEngine On
+RewriteRule ^(vendor|tests|sql|docs|build|\.git)(/|$) - [R=404,L]
 
 <FilesMatch "^(composer\.(json|lock)|phpunit\.xml|README\.md)$">
     Require all denied
