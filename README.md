@@ -120,6 +120,34 @@ cp config/config.sample.php config/config.php
 
 ---
 
+## テーブルとテストデータを入れる
+
+phpMyAdmin の「SQL」タブ（またはインポート）で、次の順に流します。
+
+1. `sql/schema.sql`（テーブルを作る。**playduo データベースは作り直しになる**）
+2. `sql/seed.sql`（商品 8 件と管理者 1 名。何度流しても件数は変わらない）
+
+管理者の開発用ログイン：ID `admin` ／ パスワード `admin1234`（ローカル専用）
+
+## テストの回し方（PHP 担当向け）
+
+[Composer](https://getcomposer.org/) が必要です。
+
+```
+composer install
+php vendor/bin/phpunit
+```
+
+- テストは専用の `playduo_test` データベースだけを使います（開発用の `playduo` には触れません）。最初に 1 回だけ MySQL で用意してください：
+  ```sql
+  CREATE DATABASE playduo_test DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+  CREATE USER 'playduo_test'@'localhost' IDENTIFIED BY 'playduo_test';
+  GRANT ALL PRIVILEGES ON playduo_test.* TO 'playduo_test'@'localhost';
+  ```
+- カバレッジ（80% 以上で合格）は pcov 入りの PHP で `composer coverage`
+
+---
+
 ## フォルダ構成
 
 | フォルダ | 内容 |
