@@ -10,6 +10,52 @@ PHP / HTML / CSS / JavaScript / MySQL（フレームワークなし）。
 
 ---
 
+## 構成と担当
+
+```mermaid
+flowchart LR
+    user(["利用者・管理者<br>（ブラウザ）"])
+
+    subgraph FE["画面（HTML / CSS / JS）　担当：吉松"]
+        fe1["利用者画面<br>U01〜U18"]
+        fe2["管理者画面<br>A01〜A11"]
+    end
+
+    subgraph BE["PHP（業務機能）　担当：趙"]
+        be1["画面ごとの PHP<br>ルート・admin/"]
+        be2["共通処理 includes/<br>認証・入力チェック・DB 接続"]
+    end
+
+    subgraph DB["データベース（MySQL）　担当：山﨑"]
+        db1[("playduo<br>7 テーブル")]
+    end
+
+    subgraph PM["企画・設計・テスト　担当：木本（リーダー）"]
+        pm1["企画書・画面設計書"]
+        pm2["テスト仕様書"]
+    end
+
+    user --> fe1
+    user --> fe2
+    fe1 -->|フォーム送信| be1
+    fe2 -->|フォーム送信| be1
+    be1 --> be2
+    be2 -->|SQL| db1
+    pm1 -.->|設計| fe1
+    pm2 -.->|テスト| be1
+```
+
+| 担当 | 受け持ち |
+|---|---|
+| 木本（リーダー） | 企画書、画面設計（吉松と共同）、テスト仕様書、成果物の提出、週報 |
+| 吉松 | 画面設計（木本と共同）、共通部品と画面の実装（HTML / CSS / JS） |
+| 山﨑 | 機能一覧、ER 図、エンティティ定義書、DB 構築とテストデータ |
+| 趙 | 業務フロー図、CRUD 図、開発環境、業務機能の実装（PHP） |
+
+画面と PHP をつなぐ約束ごと（ファイル名・`name`・変数名）は `docs/画面とPHPの対応表.md` にあります。
+
+---
+
 ## はじめての人へ：自分の PC で動かすまで（約 20 分）
 
 **ゴール**：ブラウザで `http://localhost/playduo/tools/db_check.php` を開いて
