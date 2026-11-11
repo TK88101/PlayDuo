@@ -207,6 +207,34 @@ final class AuthTest extends TestCase
         self::assertSame('locked', attempt_login($this->pdo, 'a@example.com', self::PASSWORD, self::NOW)['status']);
     }
 
+    // ロック中は正しい 6 桁・復旧コードでも照合しない（総当たりの抜け道を作らない）。通らなかったコードは消費もしない
+    public function testLockedIdentityRefusesCorrectCodesWithoutConsumingThem(): void
+    {
+        $m = $this->registerMember();
+        for ($i = 1; $i <= 5; $i++) {
+            attempt_login($this->pdo, 'a@example.com', 'wrong1234', self::NOW);
+        }
+        $later = self::NOW + 90;
+        $totp = totp_code($m['secret'], totp_step($later));
+
+        self::assertSame('locked', verify_reset_identity($this->pdo, 'a@example.com', $totp, $later)['status']);
+        self::assertSame('locked', verify_reset_identity($this->pdo, 'a@example.com', $m['codes'][0], $later)['status']);
+
+        self::assertSame(totp_step(self::NOW), (int) $this->member($m['member_id'])['totp_last_step']);
+        self::assertSame(10, (int) $this->pdo->query('SELECT COUNT(*) FROM recovery_codes WHERE used_at IS NULL')->fetchColumn());
+    }
+
+    public function testIdentityLockEndsExactlyAfterTenMinutes(): void
+    {
+        $m = $this->registerMember();
+        for ($i = 1; $i <= 5; $i++) {
+            attempt_login($this->pdo, 'a@example.com', 'wrong1234', self::NOW);
+        }
+
+        self::assertSame('locked', verify_reset_identity($this->pdo, 'a@example.com', $m['codes'][0], self::NOW + 599)['status']);
+        self::assertSame('ok', verify_reset_identity($this->pdo, 'a@example.com', $m['codes'][0], self::NOW + 600)['status']);
+    }
+
     public function testIdentityForUnknownEmailIsInvalid(): void
     {
         self::assertSame(['status' => 'invalid'], verify_reset_identity($this->pdo, 'x@example.com', '123456', self::NOW));
@@ -248,6 +276,25 @@ final class AuthTest extends TestCase
         $stmt->execute([password_hash('other999', PASSWORD_DEFAULT), $m['member_id']]);
 
         self::assertSame('stale', complete_password_reset($this->pdo, $auth, 'newpass99', self::NOW + 10));
+    }
+
+    // U14 を通ったあとでロックされても、有効時間内なら U15 は完了できる。ただしロックは解除しない（設計書 U15 手順 8）
+    public function testResetIssuedBeforeLockCompletesButLeavesLockInPlace(): void
+    {
+        $m = $this->registerMember();
+        $auth = $this->resetAuth($m);
+        $lockedAt = self::NOW + 10;
+        for ($i = 1; $i <= 5; $i++) {
+            attempt_login($this->pdo, 'a@example.com', 'wrong1234', $lockedAt);
+        }
+
+        self::assertSame('ok', complete_password_reset($this->pdo, $auth, 'newpass99', self::NOW + 20));
+
+        $member = $this->member($m['member_id']);
+        self::assertSame(5, (int) $member['login_failure_count']);
+        self::assertNotNull($member['locked_at']);
+        self::assertSame('locked', attempt_login($this->pdo, 'a@example.com', 'newpass99', $lockedAt + 599)['status']);
+        self::assertSame('ok', attempt_login($this->pdo, 'a@example.com', 'newpass99', $lockedAt + 600)['status']);
     }
 
     public function testCompleteResetIsStaleForWithdrawnMember(): void

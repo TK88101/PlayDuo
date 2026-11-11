@@ -134,6 +134,7 @@ final class ValidationTest extends TestCase
             'full-width'      => ['ａｂｃ１２３４５'],
             'space inside'    => ['abc 12345'],
             'over 72'         => [str_repeat('a1', 37)],
+            'exactly 73'      => [str_repeat('a1', 36) . 'a'],
         ];
     }
 
@@ -150,6 +151,55 @@ final class ValidationTest extends TestCase
         self::assertSame([], validate_new_password('abcd1234', 'abcd1234', 'new_password', 'new_password_confirm'));
         $max = str_repeat('a1', 36);
         self::assertSame([], validate_new_password($max, $max, 'new_password', 'new_password_confirm'));
+    }
+
+    // 画面設計書の旧記載（20 文字・半角英数のみ）より長い・記号入りのパスワードも受け付ける
+    public function testPasswordOverTwentyCharactersWithSymbolsIsAccepted(): void
+    {
+        $password = 'Abc123!@#$%^&*()_+-=x';
+
+        self::assertSame(21, strlen($password));
+        self::assertSame([], validate_new_password($password, $password, 'new_password', 'new_password_confirm'));
+    }
+
+    // 形式として正しいメールアドレスを指定の長さで作る（ローカル部 64 文字、ドメインの各ラベルは 63 文字以内）
+    private static function emailOfLength(int $length): string
+    {
+        $suffix = '.example.com';
+        $remaining = $length - 64 - 1 - strlen($suffix);
+        $labels = [];
+        while ($remaining > 0) {
+            $size = min(63, $remaining);
+            if ($remaining - $size === 1) {
+                $size--;
+            }
+            $labels[] = str_repeat('b', $size);
+            $remaining -= $size + 1;
+        }
+
+        return str_repeat('a', 64) . '@' . implode('.', $labels) . $suffix;
+    }
+
+    /** @return array<string, array{int, bool}> */
+    public static function emailLengths(): array
+    {
+        return [
+            'over old design limit (101)' => [101, true],
+            'longest accepted (254)'      => [254, true],
+            'one over (255)'              => [255, false],
+            'over column size (256)'      => [256, false],
+        ];
+    }
+
+    // 上限は 254 文字。EMAIL_MAX_LENGTH は 255 だが、FILTER_VALIDATE_EMAIL が 255 文字以上を通さない
+    #[DataProvider('emailLengths')]
+    public function testEmailLengthBoundary(int $length, bool $accepted): void
+    {
+        $post = self::validPost();
+        $post['email'] = self::emailOfLength($length);
+
+        self::assertSame($length, strlen($post['email']));
+        self::assertSame($accepted, !isset(validate_register_input($post, self::NOW)['errors']['email']));
     }
 
     public function testRegisterOldValuesKeepsInputButNeverPasswords(): void
