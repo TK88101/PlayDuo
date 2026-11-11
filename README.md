@@ -3,6 +3,11 @@
 友達と一緒に始める PC ゲーム専門店（システム開発演習Ⅰ チーム開発・マルチラボ）。
 PHP / HTML / CSS / JavaScript / MySQL（フレームワークなし）。
 
+> **【全員へ】データベースの作り直しを 1 回お願いします**
+>
+> 会員登録とログインのために、テーブルの定義が変わりました。前に `playduo` データベースを作った人は、そのままだと会員登録とログインがエラーになります。
+> 下の「データベースを作り直す（全員が 1 回やること）」の手順を、全員 1 回やってください。
+
 ---
 
 ## はじめての人へ：自分の PC で動かすまで（約 20 分）
@@ -85,8 +90,10 @@ cp config/config.sample.php config/config.php
 
 ブラウザで http://localhost/playduo/tools/db_check.php を開く。
 
-「**OK：playduo に接続しました**」と出れば完了です。
+「**OK：playduo に接続しました**」と出れば接続は完了です。
 「NG」と出たら、下の「うまくいかないとき」を見てください。
+
+この時点ではデータベースは空です。続けて、下の「データベースを作り直す（全員が 1 回やること）」でテーブルとテストデータを入れてください。
 
 ---
 
@@ -110,22 +117,64 @@ cp config/config.sample.php config/config.php
 ## 2 回目からの始め方
 
 1. XAMPP で **Apache** と **MySQL** を Start
-2. 最新のソースを取り込む（`playduo` フォルダで）
+2. `main` に切り替えて、最新のソースを取り込む（`playduo` フォルダで）
 
    ```
+   git switch main
    git pull
    ```
 
-3. 作業が終わったら XAMPP で Stop を押してよい
+   `sql/schema.sql` が更新されていたら、下の「データベースを作り直す」をもう一度やる。
+
+3. 自分の作業用に新しいブランチを作る（`main` には直接 push しない）
+
+   ```
+   git switch -c feature/作業の名前
+   ```
+
+4. 作業が終わったら commit して push する
+
+   ```
+   git add 変更したファイル
+   git commit -m "変更の説明"
+   git push -u origin feature/作業の名前
+   ```
+
+5. GitHub で `main` 宛ての Pull request を出す（確認してからマージします）
+6. XAMPP で Stop を押してよい
+
+毎回 2 から始めてください。古い `main` からブランチを作ると、マージのときにぶつかります。
 
 ---
 
-## テーブルとテストデータを入れる
+## データベースを作り直す（全員が 1 回やること）
 
-phpMyAdmin の「SQL」タブ（またはインポート）で、次の順に流します。
+会員登録とログインのために、`members` に列が 2 つ（`totp_secret`・`totp_last_step`）、テーブルが 1 つ（`recovery_codes`）増えました。
+前に作った `playduo` データベースにはこれが入っていません。`db_check.php` が「OK」でも中身は古いままで、会員登録とログインがエラーになります。
 
-1. `sql/schema.sql`（テーブルを作る。**playduo データベースは作り直しになる**）
-2. `sql/seed.sql`（商品 8 件と管理者 1 名。何度流しても件数は変わらない）
+**すでにデータベースを作った人も、下の手順を 1 回やってください。**
+
+> **注意**：`playduo` データベースは一度消えて、作り直しになります。自分で入れたデータを残したい人は、先に phpMyAdmin の「エクスポート」で保存してください。
+
+1. 最新のソースを取り込む（`playduo` フォルダで）
+
+   ```
+   git switch main
+   git pull
+   ```
+
+2. XAMPP で **Apache** と **MySQL** を Start
+3. ブラウザで http://localhost/phpmyadmin/ を開く
+4. 上の「**インポート**」タブを開く（左でデータベースを選ばなくてよい）
+5. 「ファイルを選択」で `sql/schema.sql` を選び、一番下の「インポート」を押す（テーブルが 7 つできる）
+   - Windows：`C:\xampp\htdocs\playduo\sql\schema.sql`
+   - Mac：`/Applications/XAMPP/xamppfiles/htdocs/playduo/sql/schema.sql`
+6. 同じやり方で `sql/seed.sql` を流す（商品 8 件と管理者 1 名が入る。何度流しても件数は変わらない）
+7. 確認する：左の `playduo` を開くとテーブルが 7 つあり、`members` の「構造」に `totp_secret` と `totp_last_step` がある
+
+順番は必ず `schema.sql` → `seed.sql` です。逆にするとエラーになります。
+
+次に作り直すのは、`sql/schema.sql` が更新されたときだけです。テーブルを変えたいときは `sql/schema.sql` を直して Pull request を出してください。
 
 管理者の開発用ログイン：ID `admin` ／ パスワード `admin1234`（ローカル専用）
 
