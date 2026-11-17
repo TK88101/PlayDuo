@@ -77,7 +77,7 @@ function renew_session_for_auth(): void
     unset($_SESSION['csrf_token']);
 }
 
-// 認証まわりの画面はブラウザ・履歴に残さない
+// 認証まわり・注文内容など個人の情報を含む画面はブラウザ・履歴に残さない
 function send_no_store_headers(): void
 {
     header('Cache-Control: no-store, no-cache, must-revalidate');

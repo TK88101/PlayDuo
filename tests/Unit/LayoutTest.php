@@ -51,6 +51,64 @@ final class LayoutTest extends TestCase
         self::assertStringNotContainsString('href="register.php"', $html);
     }
 
+    public function testHeaderShowsSearchBoxAndCartCountOnlyForMember(): void
+    {
+        $guest = self::renderHeader(['page_title' => 'x', 'login_member' => null, 'message' => null, 'csrf_token' => 't']);
+        $member = self::renderHeader([
+            'page_title' => 'x', 'login_member' => ['member_id' => 1], 'message' => null, 'csrf_token' => 't', 'cart_count' => 3,
+        ]);
+
+        self::assertStringContainsString('action="search.php"', $guest);
+        self::assertStringContainsString('name="keyword"', $guest);
+        self::assertStringContainsString('href="cart.php"', $guest);
+        self::assertStringNotContainsString('cart-count', $guest);
+        self::assertStringContainsString('<span class="cart-count">3</span>', $member);
+    }
+
+    /** @param array<string, mixed> $get */
+    private static function renderSearchForm(array $get, bool $full): string
+    {
+        require_once __DIR__ . '/../../includes/search.php';
+        $parsed = parse_search_criteria($get);
+        $criteria = $parsed['criteria'];
+        $errors = $parsed['errors'];
+        $full_filters = $full;
+        ob_start();
+        include __DIR__ . '/../../includes/search_form.php';
+        return (string) ob_get_clean();
+    }
+
+    public function testSearchFormKeepsSelectedConditions(): void
+    {
+        $html = self::renderSearchForm([
+            'keyword' => '"><x>', 'players' => ['3-4'], 'genre' => ['MMO'], 'crossplay' => '1', 'price_max' => '5000', 'sort' => 'new',
+        ], true);
+
+        self::assertStringContainsString('name="players[]" value="3-4" checked', $html);
+        self::assertStringContainsString('name="players[]" value="2">', $html);
+        self::assertStringContainsString('name="genre[]" value="MMO" checked', $html);
+        self::assertStringContainsString('name="crossplay" value="1" checked', $html);
+        self::assertStringContainsString('name="price_max" min="0" value="5000"', $html);
+        self::assertStringContainsString('<option value="new" selected>', $html);
+        self::assertStringContainsString('value="&quot;&gt;&lt;x&gt;"', $html, 'キーワードはエスケープして戻す');
+        self::assertStringContainsString('この条件で絞り込む', $html);
+    }
+
+    public function testSearchFormOnTopHasNoGenrePriceOrSort(): void
+    {
+        $html = self::renderSearchForm([], false);
+
+        self::assertStringNotContainsString('genre[]', $html);
+        self::assertStringNotContainsString('price_min', $html);
+        self::assertStringNotContainsString('name="sort"', $html);
+        self::assertStringContainsString('この条件で探す', $html);
+    }
+
+    public function testSearchFormShowsPriceError(): void
+    {
+        self::assertStringContainsString('価格の下限は上限以下にしてください', self::renderSearchForm(['price_min' => '9', 'price_max' => '1'], true));
+    }
+
     public function testFooterClosesDocument(): void
     {
         ob_start();

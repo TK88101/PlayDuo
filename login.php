@@ -12,9 +12,11 @@ if (is_post()) {
     $email = trim_all(post_string($_POST, 'email'));
     $result = attempt_login(db(), $email, post_string($_POST, 'password'), time());
     if ($result['status'] === 'ok') {
+        // 戻り先は session 更新の前に取り出して消す（1 回だけ使う。要確認 Q05・Q06）
+        $returnTo = take_login_return($_SESSION);
         renew_session_for_auth();
         $_SESSION['member_id'] = $result['member_id'];
-        redirect('index.php');
+        redirect($returnTo ?? 'index.php');
     }
     $locked = $result['status'] === 'locked';
     if (!$locked) {

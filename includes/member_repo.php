@@ -36,10 +36,10 @@ function find_member_by_id(PDO $pdo, int $memberId): ?array
     return $row === false ? null : $row;
 }
 
-// ヘッダー表示用（$login_member）。パスワードや秘密鍵は画面に渡さない
+// ヘッダー表示・年齢区分の判定用（$login_member）。パスワードや秘密鍵は画面に渡さない
 function find_login_member(PDO $pdo, int $memberId): ?array
 {
-    $stmt = $pdo->prepare('SELECT member_id, name, nickname FROM members WHERE member_id = ? AND withdrawal_flag = 0');
+    $stmt = $pdo->prepare('SELECT member_id, name, nickname, birth_date FROM members WHERE member_id = ? AND withdrawal_flag = 0');
     $stmt->execute([$memberId]);
     $row = $stmt->fetch();
     return $row === false ? null : $row;

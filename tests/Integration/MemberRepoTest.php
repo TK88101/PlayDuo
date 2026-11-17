@@ -125,7 +125,8 @@ final class MemberRepoTest extends TestCase
     {
         $id = create_member_with_codes($this->pdo, self::memberData(), self::codeHashes(1), self::NOW);
 
-        self::assertSame(['member_id', 'name', 'nickname'], array_keys(find_login_member($this->pdo, $id)));
+        // birth_date は年齢区分の判定（カート追加・購入）に使う。パスワード・秘密鍵は含めない
+        self::assertSame(['member_id', 'name', 'nickname', 'birth_date'], array_keys(find_login_member($this->pdo, $id)));
         self::assertNull(find_login_member($this->pdo, $id + 1));
     }
 

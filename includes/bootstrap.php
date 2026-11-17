@@ -8,6 +8,9 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/validation.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/auth_guard.php';
+require_once __DIR__ . '/cart_repo.php';
+require_once __DIR__ . '/format.php';
 
 // 想定外の例外：ログには種類と場所だけ残し（引数は残さない）、画面には詳細を出さない
 set_exception_handler(static function (Throwable $e): void {
@@ -32,6 +35,8 @@ if ($member_id !== null) {
         unset($_SESSION['member_id']);
     }
 }
+// ヘッダーのカート点数（未ログインは 0。表示はログイン中だけ）
+$cart_count = $login_member === null ? 0 : cart_count(db(), (int) $login_member['member_id']);
 $errors = [];
 $old = [];
 $message = flash_take($_SESSION);

@@ -5,6 +5,7 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 
 - 元にした資料：画面設計書（利用者・管理者）v1.1（11/4）、DB 定義 `sql/schema.sql`
 - 第2回レビュー対応で追加：U14 の入力項目変更、U17・U18（認証アプリ）
+- 11/17 追加（PHP 第2弾・商品〜購入）：ヘッダーの `$cart_count`、U03 の `$add_block`・`$in_cart`・`$cart_summary`、U08 の hidden `confirm_token`、U07・U08 の `$item_count`、U09 の `$reason_counts`、U10 の `$order_number`（下の表に【追加】と書いた行）
 
 ---
 
@@ -54,6 +55,7 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 | `$old` | エラーで戻ったときの入力値 | `value="<?= h($old['email'] ?? '') ?>"`（パスワード欄には使わない） |
 | `$message` | 完了メッセージ（「登録が完了しました」など） | 画面上部の「メッセージ表示欄」 |
 | `$login_member` | ログイン中の会員（未ログインなら `null`） | ヘッダーの表示切替（ログイン／会員登録 ⇔ マイページ／ログアウト） |
+| `$cart_count` | 【追加】カートに入っている商品の数（未ログインは 0） | ヘッダーの「カート（N）」。ログイン中だけ `<span class="cart-count">` で出す |
 
 ---
 
@@ -108,7 +110,7 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 | U06 | メールアドレス | email | `email` |
 | U06 | パスワード | password | `password` |
 | U07 | 削除 | button（行ごとの form） | hidden `product_id`・`action=delete` |
-| U08 | 購入を確定する | button | （入力なし） |
+| U08 | 購入を確定する | button | 【追加】hidden `confirm_token`（PHP が用意する `$confirm_token` をそのまま入れる。二重送信防止） |
 | U09 | 対象商品を削除してカートへ | button | （入力なし） |
 | U12 | ニックネーム | text | `nickname` |
 | U12 | メールアドレス | email | `email` |
@@ -132,14 +134,21 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 | U02 | `$products`・`$total_count` | 検索結果の配列と件数（列は U01 と同じ＋`genre`・`play_style`・`crossplay_flag`・`play_time`） |
 | U03 | `$product` | 商品1件（`products` の全列） |
 | U03-a | `$added`（true/false） | カート追加直後なら true（ポップアップを出す） |
+| U03 | `$add_block` | 【追加】追加できない理由（「購入済みです」「年齢区分（CERO C）の対象年齢に達していないため購入できません」）。`null` 以外ならボタンを `disabled` にして理由を出す |
+| U03 | `$in_cart`（true/false） | 【追加】カートに入っていれば true（ボタンを「カートに追加済み」にする） |
+| U03-a | `$cart_summary` | 【追加】`['count' => 点数, 'total' => 小計]`（ポップアップの「カート内の商品：N点」「小計」） |
 | U05 | `$input` | U04 の入力内容（`name`・`email`・`birth_date`・`nickname`・`phone`） |
 | U17 | `$totp_secret`・`$totp_uri` | 手入力用の秘密鍵と、QR コードにする文字列（`<div id="qrcode" data-uri="<?= h($totp_uri) ?>"></div>` を置けば JS で描画） |
 | U18 | `$recovery_codes` | 復旧コード10個の配列（この画面でしか出ない） |
 | U06 | `$locked`（true/false） | ロック中なら true（U06-b の表示） |
 | U07 | `$cart_items`・`$total` | カートの商品（`product_id`・`name`・`image`・`price`・`can_buy`・`reason`）と合計金額 |
-| U08 | `$cart_items`・`$total` | U07 と同じ |
-| U09 | `$ng_items` | 買えない商品（`name`・`reason`） |
+| U07 | `$item_count` | 【追加】購入できる商品の点数（販売終了などは数えない）。`$cart_items` が空なら U07-a の表示 |
+| U08 | `$cart_items`・`$total`・`$item_count` | U07 と同じ（購入できない商品があると U08 には来ない） |
+| U08 | `$confirm_token` | 【追加】フォームの hidden に入れる |
+| U09 | `$ng_items` | 買えない商品（`name`・`reason`。reason は `販売終了` / `購入済み` / `年齢制限`） |
+| U09 | `$reason_counts` | 【追加】理由ごとの点数（`['購入済み' => 1, '年齢制限' => 1]`） |
 | U10 | `$order`・`$order_items` | 注文（`order_id`・`order_date`）と購入した商品（`product_name`・`price`） |
+| U10 | `$order_number` | 【追加】表示用の注文番号（R＋注文日 yyMMdd＋通し番号。例 R261117001） |
 | U11 | `$library`・`$selected` | 購入済み商品の配列と、選んだ商品1件 |
 | U12 | `$member` | 現在の会員情報（`nickname`・`email`・`phone`） |
 
