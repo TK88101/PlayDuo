@@ -52,7 +52,7 @@ function find_member_order(PDO $pdo, int $memberId, int $orderId): ?array
     ];
 }
 
-// 表示用の注文番号：R＋注文日 yyMMdd＋通し番号の order_id（3 桁ゼロ埋め。要確認 Q13・趙 11/17 拍板）
+// 表示用の注文番号：R＋注文日 yyMMdd＋通し番号の order_id（3 桁ゼロ埋め。要確認 Q13・趙 11/17 決定）
 function format_order_number(int $orderId, string $orderDate): string
 {
     $yymmdd = substr($orderDate, 2, 2) . substr($orderDate, 5, 2) . substr($orderDate, 8, 2);

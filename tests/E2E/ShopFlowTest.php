@@ -14,7 +14,7 @@ use PlayDuo\Tests\Support\TestDb;
 
 /**
  * 商品検索〜カート〜購入の HTTP シナリオ（php -S ＋ playduo_test）。
- * 期待結果はテスト仕様書（利用者）第2版と Plan 2026-11-17 §2.0（趙 11/17 拍板）による。
+ * 期待結果はテスト仕様書（利用者）第2版と Plan 2026-11-17 §2.0（趙 11/17 決定）による。
  */
 final class ShopFlowTest extends TestCase
 {
