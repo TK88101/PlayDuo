@@ -120,6 +120,15 @@ final class AdminUploadTest extends TestCase
         self::assertNull(check_zip($this->zip()));
         self::assertNotNull(check_zip($this->file('fake.zip', 'not a zip')), 'A06-019');
         self::assertNotNull(check_zip($this->png()));
+        $empty = "{$this->dir}/empty.zip";
+        $zip = new ZipArchive();
+        $zip->open($empty, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->addFromString('x', 'x');
+        $zip->deleteName('x');
+        $zip->close();
+        file_put_contents($empty, "PK\x05\x06" . str_repeat("\0", 18));   // 中身 0 件の ZIP（22 バイト）
+        self::assertNotNull(check_zip($empty), '空の ZIP は配布できない');
+        self::assertNotNull(check_zip($this->file('zero.zip', '')), '0 バイト');
         $big = $this->file('big.zip', str_repeat('a', UPLOAD_ZIP_MAX_BYTES + 1));
         self::assertStringContainsString('25MB', (string) check_zip($big));
     }
@@ -162,6 +171,21 @@ final class AdminUploadTest extends TestCase
         self::assertFileDoesNotExist($old);
         self::assertFileExists($fresh);
         self::assertFileExists($other, '自分の形式の名前だけ消す');
+    }
+
+    public function testTmpDirMustBeOwnedAndPrivate(): void
+    {
+        $fresh = "{$this->dir}/stash";
+        self::assertSame($fresh, admin_upload_tmp_dir($fresh));
+        self::assertSame('0700', substr(sprintf('%o', fileperms($fresh)), -4));
+        chmod($fresh, 0777);
+        try {
+            admin_upload_tmp_dir($fresh);
+            self::fail('他人も書ける一時フォルダは使わない');
+        } catch (\RuntimeException) {
+        } finally {
+            rmdir($fresh);
+        }
     }
 
     // ---- post_max_size 超過 ----

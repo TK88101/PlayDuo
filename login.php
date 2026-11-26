@@ -2,6 +2,7 @@
 // U06 ログイン（U06-a エラー／U06-b ロック中）
 declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
+require_once __DIR__ . '/includes/admin_auth.php';
 send_no_store_headers();
 
 $page_title = 'ログイン';
@@ -16,7 +17,8 @@ if (is_post()) {
         // 戻り先は session 更新の前に取り出して消す（1 回だけ使う。要確認 Q05・Q06）
         $returnTo = take_login_return($_SESSION);
         renew_session_for_auth();
-        unset($_SESSION['admin_id']);   // 管理者と会員の両方には同時にならない（Plan 2026-11-26-php-admin §2.0）
+        forget_product_draft($_SESSION);   // 管理者と会員の両方には同時にならない（Plan 2026-11-26-php-admin §2.0）
+        unset($_SESSION['admin_id']);
         $_SESSION['member_id'] = $result['member_id'];
         redirect($returnTo ?? 'index.php');
     }

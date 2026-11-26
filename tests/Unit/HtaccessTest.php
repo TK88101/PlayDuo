@@ -46,4 +46,10 @@ final class HtaccessTest extends TestCase
     {
         self::assertSame($blocked, preg_match(self::blockPattern(), $path) === 1, $path);
     }
+
+    public function testDirectoryListingIsDisabled(): void
+    {
+        $htaccess = (string) file_get_contents(__DIR__ . '/../../.htaccess');
+        self::assertMatchesRegularExpression('/^Options -Indexes$/m', $htaccess);
+    }
 }

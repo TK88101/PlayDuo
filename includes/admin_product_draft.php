@@ -33,6 +33,14 @@ function discard_product_draft(array &$session, string $tmpDir): void
     }
 }
 
+// 身分が変わるとき（管理者・会員のログイン、管理者のログアウト）：確認待ちがあれば一時ファイルごと捨てる（セキュリティ評審 MEDIUM-2）
+function forget_product_draft(array &$session): void
+{
+    if (isset($session[PRODUCT_DRAFT_KEY])) {
+        discard_product_draft($session, admin_upload_tmp_dir());
+    }
+}
+
 // A07 の保存：取り出したらすぐ消す（二重送信は 2 回目が「確認待ちなし」になる：A07-007〜009）
 function take_product_draft(array &$session): ?array
 {

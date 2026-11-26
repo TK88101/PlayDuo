@@ -115,7 +115,7 @@ function product_choices(array $post, array &$errors): array
     return $input;
 }
 
-/** 価格・容量・発売日・人数（半角の数字だけ。全角・カンマ・符号は受けない：A06-007） */
+/** 価格・容量（DB は DECIMAL(5,1) なので 999.9 まで）・発売日・人数（半角の数字だけ。全角・カンマ・符号は受けない：A06-007） */
 function product_numbers(array $post, array &$errors): array
 {
     $price = trim_all(post_string($post, 'price'));
@@ -128,8 +128,8 @@ function product_numbers(array $post, array &$errors): array
     $capacity = trim_all(post_string($post, 'capacity'));
     if ($capacity === '') {
         $errors['capacity'] = '容量を入力してください';
-    } elseif (preg_match('/\A[0-9]{1,4}(\.[0-9])?\z/', $capacity) !== 1 || (float) $capacity <= 0) {
-        $errors['capacity'] = '容量は0.1〜9999.9の数値（小数は1桁まで）で入力してください';
+    } elseif (preg_match('/\A[0-9]{1,3}(\.[0-9])?\z/', $capacity) !== 1 || (float) $capacity <= 0) {
+        $errors['capacity'] = '容量は0.1〜999.9の数値（小数は1桁まで）で入力してください';
     }
 
     $date = trim_all(post_string($post, 'release_date'));

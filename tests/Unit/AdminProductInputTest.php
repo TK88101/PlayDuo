@@ -76,7 +76,8 @@ final class AdminProductInputTest extends TestCase
         yield 'price comma' => ['price', '2,480', false];
         yield 'capacity small' => ['capacity', '0.1', true];
         yield 'capacity int' => ['capacity', '62', true];
-        yield 'capacity max' => ['capacity', '9999.9', true];
+        yield 'capacity max' => ['capacity', '999.9', true];
+        yield 'capacity over db' => ['capacity', '1000', false];
         yield 'capacity zero' => ['capacity', '0', false];
         yield 'capacity 2 decimals' => ['capacity', '3.25', false];
         yield 'capacity over' => ['capacity', '10000', false];

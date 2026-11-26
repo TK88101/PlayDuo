@@ -223,6 +223,20 @@ final class AdminProductEditFlowTest extends TestCase
         self::assertStringContainsString('¥2,980', $this->admin->get('admin/products.php')->body);
     }
 
+    public function testDraftDoesNotSurviveAnotherLogin(): void
+    {
+        ShopFixtures::insertMember($this->pdo, 'b@example.com');
+        self::assertRedirect($this->postEdit('admin/product_edit.php', self::fields(), self::allFiles()), 'product_confirm.php');
+
+        $token = $this->admin->get('login.php')->csrfToken();
+        $this->admin->post('login.php', ['csrf_token' => $token, 'email' => 'b@example.com', 'password' => 'abc12345']);
+        $token = $this->admin->get('admin/login.php')->csrfToken();
+        $this->admin->post('admin/login.php', ['csrf_token' => $token, 'login_id' => 'admin', 'password' => 'admin1234']);
+
+        self::assertRedirect($this->admin->get('admin/product_confirm.php'), 'products.php', '前の管理者の確認待ちは残らない');
+        self::assertSame(8, ShopFixtures::count($this->pdo, 'products'));
+    }
+
     public function testBadRequests(): void
     {
         self::assertSame(404, $this->admin->get('admin/product_edit.php?id=999')->status);

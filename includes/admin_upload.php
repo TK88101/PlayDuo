@@ -53,7 +53,7 @@ function check_image(string $path): array
     return ['ext' => $type[1]];
 }
 
-/** ZIP として開けるものだけ（A06-019）。中身は展開しない */
+/** ZIP として開けて中身が 1 件以上あるものだけ（A06-019）。中身は展開しない */
 function check_zip(string $path): ?string
 {
     if (filesize($path) > UPLOAD_ZIP_MAX_BYTES) {
@@ -61,11 +61,12 @@ function check_zip(string $path): ?string
     }
     $zip = new ZipArchive();
     $opened = $zip->open($path, ZipArchive::RDONLY);
-    if ($opened !== true) {
+    if (filesize($path) === 0 || $opened !== true) {
         return '配布ファイルはZIP形式のファイルを選択してください';
     }
+    $count = $zip->numFiles;
     $zip->close();
-    return null;
+    return $count > 0 ? null : '配布ファイルのZIPが空です';
 }
 
 /**
@@ -102,12 +103,18 @@ function purge_stale_uploads(string $dir, int $now): void
     }
 }
 
-// 一時フォルダ（Web 公開フォルダの外）。無ければ作る
-function admin_upload_tmp_dir(): string
+// 一時フォルダ（Web 公開フォルダの外）。無ければ作る。
+// 共有の一時領域なので、自分の持ち物で他人が書けない（0700）ときだけ使う（セキュリティ評審 LOW-5）
+function admin_upload_tmp_dir(?string $dir = null): string
 {
-    $dir = sys_get_temp_dir() . '/playduo_admin_uploads';
+    // 実行ユーザーごとに分ける（Apache は daemon、テストの php -S は自分のユーザーで動き、同じ名前だと片方が使えない）
+    $dir ??= rtrim(sys_get_temp_dir(), '/') . '/playduo_admin_uploads_' . posix_geteuid();
     if (!is_dir($dir) && !mkdir($dir, 0700, true) && !is_dir($dir)) {
         throw new RuntimeException('一時フォルダを作れませんでした');
+    }
+    clearstatcache(true, $dir);
+    if (is_link($dir) || fileowner($dir) !== posix_geteuid() || (fileperms($dir) & 0077) !== 0) {
+        throw new RuntimeException('一時フォルダの持ち主か権限が想定と違います');
     }
     return $dir;
 }

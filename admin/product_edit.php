@@ -83,7 +83,7 @@ $status_label = $is_new ? '公開中（登録すると公開されます）' : p
         <?= error_html($errors, 'genre') ?>
         <label>価格（円） <input type="number" name="price" value="<?= h($old['price']) ?>" min="0" max="1000000" step="1"></label>
         <?= error_html($errors, 'price') ?>
-        <label>容量（GB） <input type="number" name="capacity" value="<?= h($old['capacity']) ?>" min="0.1" max="9999.9" step="0.1"></label>
+        <label>容量（GB） <input type="number" name="capacity" value="<?= h($old['capacity']) ?>" min="0.1" max="999.9" step="0.1"></label>
         <?= error_html($errors, 'capacity') ?>
         <label>発売日 <input type="date" name="release_date" value="<?= h($old['release_date']) ?>"></label>
         <?= error_html($errors, 'release_date') ?>

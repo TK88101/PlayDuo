@@ -7,6 +7,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/admin_product_draft.php';
 
 // A01-008：ロックしない・回数も数えない。存在しない ID でもダミーで照合して、かかる時間をそろえる
 function admin_login(PDO $pdo, string $loginId, #[\SensitiveParameter] string $password): ?int
@@ -51,6 +52,7 @@ function require_admin(?int $adminId): int
 // ログイン成功：session ID と CSRF を作り直し、会員としてのログイン状態は消す
 function admin_sign_in(int $adminId): void
 {
+    forget_product_draft($_SESSION);
     renew_session_for_auth();
     unset($_SESSION['member_id'], $_SESSION['login_return']);
     $_SESSION['admin_id'] = $adminId;
@@ -59,6 +61,7 @@ function admin_sign_in(int $adminId): void
 // ログアウト：管理者の状態だけ消して session ID と CSRF を作り直す（会員の状態はログイン時に消えている）
 function admin_sign_out(): void
 {
+    forget_product_draft($_SESSION);
     unset($_SESSION['admin_id']);
     session_regenerate_id(true);
     unset($_SESSION['csrf_token']);

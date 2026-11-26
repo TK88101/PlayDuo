@@ -12,6 +12,7 @@ send_no_store_headers();
 $admin_id = current_admin_id($_SESSION);
 if ($admin_id !== null && !admin_exists(db(), $admin_id)) {
     // 管理者の行が消えた：その session は使わせない
+    forget_product_draft($_SESSION);
     $_SESSION = [];
     session_regenerate_id(true);
     $admin_id = null;

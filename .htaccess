@@ -1,6 +1,9 @@
 # 開発用のファイルは Web から見せない（Apache 用。php -S には効かない）
 # このフォルダ直下からの相対パスで判定する（assets/js/vendor/ などは対象外）
 # 大文字小文字は区別しない（NC・(?i)）：macOS・Windows では DOWNLOADS/ でも同じフォルダが開くため（セキュリティ評審 HIGH-1）
+# フォルダの中身の一覧を出さない（XAMPP は既定で Indexes が有効。uploads/ に非公開商品の画像名が並ぶのを防ぐ）
+Options -Indexes
+
 RewriteEngine On
 RewriteRule ^(vendor|tests|sql|docs|build|downloads|\.git)(/|$) - [R=404,L,NC]
 
