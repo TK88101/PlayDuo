@@ -20,6 +20,15 @@ function post_string(array $post, string $key): string
     return is_string($value) ? $value : '';
 }
 
+// YYYY-MM-DD の実在する日付（A06 発売日・A10 期間）
+function is_real_date(string $value): bool
+{
+    if (preg_match('/\A([0-9]{4})-([0-9]{2})-([0-9]{2})\z/', $value, $m) !== 1) {
+        return false;
+    }
+    return checkdate((int) $m[2], (int) $m[3], (int) $m[1]);
+}
+
 function trim_all(string $value): string
 {
     // 全角スペースも前後から取り除く

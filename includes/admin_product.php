@@ -156,14 +156,6 @@ function product_players(string $value): ?int
     return preg_match('/\A[1-9][0-9]?\z/', $value) === 1 ? (int) $value : null;
 }
 
-function is_real_date(string $value): bool
-{
-    if (preg_match('/\A([0-9]{4})-([0-9]{2})-([0-9]{2})\z/', $value, $m) !== 1) {
-        return false;
-    }
-    return checkdate((int) $m[2], (int) $m[3], (int) $m[1]);
-}
-
 /** 対応OS（1つ以上）とクロスプレイ（両 OS のときだけ：A06-012・A06-013） */
 function product_os(array $post, array &$errors): array
 {
