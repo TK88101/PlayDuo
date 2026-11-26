@@ -1,6 +1,7 @@
 <?php
 // 管理画面の共通ヘッダー（骨架。見た目は admin.css ができたら置き換える）
 // 使う変数：$page_title, $admin_id, $message, $csrf_token
+// 任意：$message_in_page（true でメッセージは画面側が出す。Figma A03 は見出しの横）
 $admin_css = __DIR__ . '/../assets/css/admin.css';
 ?>
 <!DOCTYPE html>
@@ -15,15 +16,20 @@ $admin_css = __DIR__ . '/../assets/css/admin.css';
 </head>
 <body class="admin">
 <header class="admin-header">
-    <a href="index.php">Play Duo 管理画面</a>
+    <a class="admin-logo" href="index.php">Play Duo <span>管理画面</span></a>
 <?php if (!empty($admin_id)): ?>
-    <form method="post" action="logout.php">
-        <input type="hidden" name="csrf_token" value="<?= h($csrf_token ?? '') ?>">
-        <button type="submit">ログアウト</button>
-    </form>
+    <nav class="admin-nav">
+        <a href="products.php">商品管理</a>
+        <a href="members.php">会員管理</a>
+        <a href="orders.php">注文管理</a>
+        <form method="post" action="logout.php">
+            <input type="hidden" name="csrf_token" value="<?= h($csrf_token ?? '') ?>">
+            <button type="submit">ログアウト</button>
+        </form>
+    </nav>
 <?php endif; ?>
 </header>
 <main class="admin-main">
-<?php if (!empty($message)): ?>
+<?php if (!empty($message) && empty($message_in_page)): ?>
     <p class="message"><?= h($message) ?></p>
 <?php endif; ?>

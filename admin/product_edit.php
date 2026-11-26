@@ -54,19 +54,9 @@ $status_label = $is_new ? '公開中（登録すると公開されます）' : p
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
 <h1><?= $is_new ? '商品登録' : '商品編集' ?></h1>
-<?php if ($errors !== []): ?>
-    <div class="form-alert">
-        <p class="form-alert-title">入力内容を確認してください</p>
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?= h($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
-<form method="post" action="" enctype="multipart/form-data" class="admin-form">
+<form method="post" action="" enctype="multipart/form-data" class="admin-form admin-card">
     <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-    <section>
+    <section class="form-basic">
         <h2>基本情報</h2>
         <label>タイトル <input type="text" name="name" value="<?= h($old['name']) ?>" maxlength="100"></label>
         <?= error_html($errors, 'name') ?>
@@ -102,8 +92,8 @@ $status_label = $is_new ? '公開中（登録すると公開されます）' : p
         <?= error_html($errors, 'description') ?>
         <?php include __DIR__ . '/../includes/admin_file_field.php'; /* game_file */ ?>
     </section>
-    <section>
-        <h2>マルチプレイ情報</h2>
+    <section class="form-multi">
+        <h2>マルチプレイ情報（検索・比較に使う項目）</h2>
         <label>プレイ人数（最小） <input type="number" name="min_players" value="<?= h($old['min_players']) ?>" min="1" max="99"></label>
         <label>プレイ人数（最大） <input type="number" name="max_players" value="<?= h($old['max_players']) ?>" min="1" max="99"></label>
         <?= error_html($errors, 'min_players') ?>
@@ -127,7 +117,7 @@ $status_label = $is_new ? '公開中（登録すると公開されます）' : p
         <label><input type="checkbox" name="crossplay_flag" value="1"<?= checked($old['crossplay_flag'] === '1') ?>> クロスプレイ（WindowsとMacの両方に対応する場合だけ）</label>
         <?= error_html($errors, 'crossplay_flag') ?>
     </section>
-    <section>
+    <section class="form-images">
         <h2>画像（PNG・JPEG、1枚3MBまで）</h2>
         <?php foreach (['image', 'screenshot1', 'screenshot2', 'screenshot3'] as $file_field): ?>
             <?php include __DIR__ . '/../includes/admin_file_field.php'; ?>
@@ -135,13 +125,24 @@ $status_label = $is_new ? '公開中（登録すると公開されます）' : p
     </section>
     <section class="admin-status">
         <h2>状態</h2>
-        <p><?= h($status_label) ?></p>
+        <span class="status-badge<?= !$is_new && (int) $product['public_flag'] !== 1 ? ' status-badge-hidden' : '' ?>"><?= h($status_label) ?></span>
         <p class="note">※商品は削除せず、「非公開」に切り替えて販売を止めます（切り替えは商品管理一覧から）</p>
     </section>
-    <?= error_html($errors, 'files') ?>
-    <div class="form-actions">
-        <a class="button-secondary" href="products.php">キャンセル</a>
-        <button type="submit" class="button-primary"><?= $is_new ? '確認する' : '更新する' ?></button>
+    <div class="form-footer">
+        <?php if ($errors !== []): ?>
+            <div class="form-alert">
+                <p class="form-alert-title">入力内容を確認してください</p>
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= h($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+        <div class="form-actions">
+            <a class="button-secondary" href="products.php">キャンセル</a>
+            <button type="submit" class="button-primary"><?= $is_new ? '確認画面へ' : '更新する' ?></button>
+        </div>
     </div>
 </form>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

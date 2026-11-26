@@ -7,13 +7,18 @@ require_once __DIR__ . '/../includes/admin_product_repo.php';
 require_admin($admin_id);
 
 $page_title = '商品管理';
+$message_in_page = true;   // 登録・更新・公開状態の変更のメッセージは見出しの横（Figma A03）
 $products = all_products_for_admin(db());
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
 <div class="admin-page-head">
     <h1>商品管理</h1>
-    <a class="button-primary" href="product_edit.php">＋商品を登録</a>
+    <?php if (!empty($message)): ?>
+        <p class="message"><?= h($message) ?></p>
+    <?php endif; ?>
+    <a class="admin-button" href="product_edit.php">＋商品を登録</a>
 </div>
+<div class="admin-card">
 <table class="admin-table">
     <thead>
         <tr>
@@ -36,11 +41,12 @@ $products = all_products_for_admin(db());
                 <td><?= h($product['age_rating']) ?></td>
                 <td><span class="status <?= $is_public ? 'status-public' : 'status-hidden' ?>"><?= h(public_status_label($product)) ?></span></td>
                 <td class="actions">
-                    <a href="product_edit.php?id=<?= h($product['product_id']) ?>">編集</a>
-                    <a href="product_visibility.php?id=<?= h($product['product_id']) ?>"><?= $is_public ? '非公開' : '公開' ?></a>
+                    <a class="button-small" href="product_edit.php?id=<?= h($product['product_id']) ?>">編集</a>
+                    <a class="button-small-sub" href="product_visibility.php?id=<?= h($product['product_id']) ?>"><?= $is_public ? '非公開' : '公開' ?></a>
                 </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

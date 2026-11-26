@@ -27,8 +27,12 @@ $summary = [
 ];
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
-<h1>注文詳細</h1>
-<section>
+<div class="admin-page-head">
+    <h1>注文詳細</h1>
+    <a class="admin-button-sub" href="orders.php">一覧へ戻る</a>
+</div>
+<div class="admin-detail-layout">
+<section class="admin-card admin-side-card">
     <h2>注文情報</h2>
     <dl class="admin-detail">
         <?php foreach ($summary as $label => $value): ?>
@@ -36,7 +40,7 @@ $summary = [
         <?php endforeach; ?>
     </dl>
 </section>
-<section>
+<section class="admin-card">
     <h2>購入したゲーム（ダウンロード権利あり）</h2>
     <table class="admin-table">
         <thead><tr><th>商品ID</th><th>ゲーム</th><th>購入時の価格</th></tr></thead>
@@ -51,5 +55,5 @@ $summary = [
         </tbody>
     </table>
 </section>
-<p><a href="orders.php">一覧へ戻る</a></p>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

@@ -25,8 +25,12 @@ $profile = [
 ];
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
-<h1>会員詳細</h1>
-<section>
+<div class="admin-page-head">
+    <h1>会員詳細</h1>
+    <a class="admin-button-sub" href="members.php">一覧へ戻る</a>
+</div>
+<div class="admin-detail-layout">
+<section class="admin-card admin-side-card">
     <h2>登録情報</h2>
     <dl class="admin-detail">
         <?php foreach ($profile as $label => $value): ?>
@@ -35,8 +39,8 @@ $profile = [
     </dl>
     <p class="note">※パスワードは表示しない</p>
 </section>
-<section>
-    <h2>購入履歴</h2>
+<section class="admin-card">
+    <h2>この会員の購入履歴</h2>
     <?php if ($orders === []): ?>
         <p class="empty">購入履歴はありません</p>
     <?php else: ?>
@@ -55,5 +59,5 @@ $profile = [
         </table>
     <?php endif; ?>
 </section>
-<p><a href="members.php">一覧へ戻る</a></p>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

@@ -35,6 +35,7 @@ $is_public = (int) $product['public_flag'] === 1;
 $page_title = $is_public ? '非公開確認' : '再公開確認';
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-dialog-backdrop">
 <div class="admin-dialog" role="dialog" aria-labelledby="dialog-title">
     <?php if ($is_public): ?>
         <h1 id="dialog-title">この商品を非公開にしますか？</h1>
@@ -59,5 +60,6 @@ $page_title = $is_public ? '非公開確認' : '再公開確認';
         <a class="button-secondary" href="products.php">キャンセル</a>
         <button type="submit" class="<?= $is_public ? 'button-danger' : 'button-primary' ?>"><?= $is_public ? '非公開にする' : '公開する' ?></button>
     </form>
+</div>
 </div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

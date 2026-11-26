@@ -17,6 +17,7 @@ foreach (['date_from', 'date_to', 'member', 'product'] as $field) {
 }
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-page-head">
 <h1>注文管理</h1>
 <form method="get" action="" class="admin-search">
     <label>期間 <input type="date" name="date_from" value="<?= h($old['date_from']) ?>"></label>
@@ -25,6 +26,8 @@ foreach (['date_from', 'date_to', 'member', 'product'] as $field) {
     <label>商品 <input type="search" name="product" value="<?= h($old['product']) ?>" placeholder="ゲーム名"></label>
     <button type="submit">検索</button>
 </form>
+</div>
+<div class="admin-card">
 <?php if ($errors !== []): ?>
     <div class="form-alert">
         <?php foreach ($errors as $error): ?>
@@ -47,10 +50,11 @@ foreach (['date_from', 'date_to', 'member', 'product'] as $field) {
                     <td><?= h(display_datetime($order['order_date'])) ?></td>
                     <td><?= h($order['item_count']) ?>点</td>
                     <td><?= h(yen($order['total'])) ?></td>
-                    <td><a href="order.php?id=<?= h($order['order_id']) ?>">詳細</a></td>
+                    <td class="actions"><a class="button-small" href="order.php?id=<?= h($order['order_id']) ?>">詳細</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 <?php endif; ?>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

@@ -10,11 +10,14 @@ $keyword = is_string($_GET['keyword'] ?? null) ? trim_all($_GET['keyword']) : ''
 $members = search_members(db(), $keyword);
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
-<h1>会員管理</h1>
-<form method="get" action="" class="admin-search">
-    <input type="search" name="keyword" value="<?= h($keyword) ?>" placeholder="氏名・メールアドレスで検索">
-    <button type="submit">検索</button>
-</form>
+<div class="admin-page-head">
+    <h1>会員管理</h1>
+    <form method="get" action="" class="admin-search">
+        <input type="search" name="keyword" value="<?= h($keyword) ?>" placeholder="氏名・メールアドレスで検索">
+        <button type="submit">検索</button>
+    </form>
+</div>
+<div class="admin-card">
 <?php if ($members === []): ?>
     <p class="empty">該当する会員はいません</p>
 <?php else: ?>
@@ -31,11 +34,12 @@ $members = search_members(db(), $keyword);
                     <td><?= h(display_date($member['birth_date'])) ?></td>
                     <td><?= h(display_date($member['created_at'])) ?></td>
                     <td><?= h($member['purchase_count']) ?></td>
-                    <td><?= h(member_status_label($member)) ?></td>
-                    <td><a href="member.php?id=<?= h($member['member_id']) ?>">詳細</a></td>
+                    <td><span class="status <?= (int) $member['withdrawal_flag'] === 1 ? 'status-hidden' : 'status-public' ?>"><?= h(member_status_label($member)) ?></span></td>
+                    <td class="actions"><a class="button-small" href="member.php?id=<?= h($member['member_id']) ?>">詳細</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 <?php endif; ?>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>

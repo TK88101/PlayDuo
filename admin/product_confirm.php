@@ -44,8 +44,10 @@ $rows = [
 ];
 ?>
 <?php include __DIR__ . '/../includes/admin_header.php'; ?>
-<h1><?= $is_new ? '商品登録確認' : '商品編集確認' ?></h1>
-<p>この内容で<?= $is_new ? '登録' : '更新' ?>します。よろしいですか？</p>
+<div class="admin-dialog-backdrop">
+<div class="admin-dialog admin-dialog-wide" role="dialog" aria-labelledby="dialog-title">
+<h1 id="dialog-title">この内容で<?= $is_new ? '登録' : '更新' ?>しますか？</h1>
+<p class="dialog-lead">内容を確認し、問題がなければ「<?= $is_new ? '登録する' : '更新する' ?>」を押してください。</p>
 <?php if ($product !== null): ?>
     <p class="dialog-target"><?= h(product_code($product)) ?> <?= h($product['name']) ?></p>
 <?php endif; ?>
@@ -59,9 +61,11 @@ $rows = [
         <dd><?= isset($draft['files'][$field]) ? '新しいファイルを選択済み' : '変更なし' ?></dd>
     <?php endforeach; ?>
 </dl>
-<form method="post" action="" class="form-actions">
+<form method="post" action="" class="dialog-actions">
     <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
     <button type="submit" name="action" value="back" class="button-secondary">修正する</button>
     <button type="submit" name="action" value="save" class="button-primary"><?= $is_new ? '登録する' : '更新する' ?></button>
 </form>
+</div>
+</div>
 <?php include __DIR__ . '/../includes/admin_footer.php'; ?>
