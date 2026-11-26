@@ -218,6 +218,17 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 | A09 | `$member`・`$orders` | 会員1件とその購入履歴 |
 | A10 | `$orders` | 注文の配列（`order_id`・`order_date`・会員名・合計金額） |
 | A11 | `$order`・`$order_items` | 注文1件と明細（`product_name`・`price`） |
+| A03・A04・A11 | 商品コード | 【追加】`product_code($product)`。`file_path` が `downloads/g01.zip` の形なら `g01`、管理画面で登録した商品は `p12` など。形が違えば `#商品ID` |
+| A03 | 状態・操作 | 【追加】`public_status_label($product)`（公開中／非公開）。「非公開」「公開」は `product_visibility.php?id=` へのリンク（確認画面で POST） |
+| A06 | `$old`・`$errors` | 【追加】入力欄の値（文字列）とエラー（キー＝name。対応OS は `os`、送信サイズ超過は `files`）。エラーはメッセージ表示欄にまとめて出す |
+| A06 | `$kept_files` | 【追加】確認待ちに入っているファイル（name → 一時名）。あれば「選択済み」を出し、選び直さなくてよい。ファイル 1 項目は `includes/admin_file_field.php` を include |
+| A06 | `?resume=1` | 【追加】A07 の「修正する」から戻ったとき。これが無い GET は前の入力を捨てて開き直す |
+| A06 | ファイルの上限 | 【追加】画像は PNG・JPEG、1 枚 3MB・縦横 4096px まで。ZIP は 25MB まで（XAMPP の post_max_size 40M に収まる大きさ） |
+| A07 | `$input`・`$draft` | 【追加】確認する値（A06 の検証済みの値）と確認待ち（`$draft['files']` があるファイル項目は「新しいファイルを選択済み」）。保存結果のメッセージは A03 に出す |
+| A08・A09・A10・A11 | 会員ID | 【追加】`member_code(会員ID)` で `M0001` の形 |
+| A09 | `$profile` | 【追加】登録情報の表示用（ラベル → 値）。パスワード・認証アプリの秘密鍵は取得もしない |
+| A10 | `$errors`・`$old` | 【追加】期間のエラー（`date`）・文字数のエラー（`member`・`product`）と、検索欄に戻す値。会員欄は `M0001`・数字なら会員ID、それ以外は氏名の部分一致 |
+| A10 | `$orders` の追加列 | 【追加】`member_id`・`member_name`・`item_count`・`total` |
 
 ---
 
