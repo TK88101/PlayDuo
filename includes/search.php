@@ -15,6 +15,13 @@ const SEARCH_OS = ['windows', 'mac'];
 const SEARCH_PLAY_STYLES = ['協力', '対戦'];
 const SEARCH_GENRES = ['FPS', 'MMO', 'クラフト', '対戦(PVP)', 'レース'];
 
+// 画面に出す名前（U01・U02 の絞り込みパネルと、U02 の「条件：」の行で共用）
+const SEARCH_FILTER_LABELS = [
+    'players'    => ['プレイ人数', ['2' => '2人', '3-4' => '3〜4人', '5plus' => '5人以上']],
+    'os'         => ['対応OS', ['windows' => 'Windows', 'mac' => 'Mac']],
+    'play_style' => ['遊び方', ['協力' => '協力', '対戦' => '対戦']],
+];
+
 // 要確認 Q02：選んだ人数の全員で遊べる商品だけ
 const PLAYERS_SQL = [
     '2'     => '(p.min_players <= 2 AND p.max_players >= 2)',
@@ -169,4 +176,31 @@ function search_where(array $criteria): array
 function search_order_by(string $sort): string
 {
     return SEARCH_ORDER_BY[$sort] ?? SEARCH_ORDER_BY[SEARCH_DEFAULT_SORT];
+}
+
+// U02 の「条件：」の行。パネルと同じ順に「種類内は・、種類間は／」でつなぐ（値はホワイトリスト済み）
+function criteria_summary(array $criteria): string
+{
+    $parts = [];
+    if ($criteria['keyword'] !== '') {
+        $parts[] = '「' . $criteria['keyword'] . '」';
+    }
+    foreach (SEARCH_FILTER_LABELS as $name => [, $options]) {
+        $selected = array_values(array_filter(array_keys($options), static fn ($v): bool => in_array((string) $v, $criteria[$name], true)));
+        if ($selected !== []) {
+            $parts[] = implode('・', array_map(static fn ($v): string => $options[$v], $selected));
+        }
+    }
+    if ($criteria['crossplay']) {
+        $parts[] = 'クロスプレイできる';
+    }
+    if ($criteria['genre'] !== []) {
+        $parts[] = implode('・', $criteria['genre']);
+    }
+    if ($criteria['price_min'] !== null || $criteria['price_max'] !== null) {
+        $min = $criteria['price_min'] === null ? '' : '¥' . number_format($criteria['price_min']);
+        $max = $criteria['price_max'] === null ? '' : '¥' . number_format($criteria['price_max']);
+        $parts[] = $min . '〜' . $max;
+    }
+    return $parts === [] ? '指定なし' : implode('／', $parts);
 }

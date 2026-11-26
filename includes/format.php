@@ -38,6 +38,31 @@ function crossplay_label(array $row): string
     return (int) $row['crossplay_flag'] === 1 ? '○ できる' : '× できない';
 }
 
+// U01 カードのタグ（Figma U01）：両対応は「Win / Mac」、片方だけは「Windowsのみ」「Macのみ」
+function os_tag_label(array $row): string
+{
+    $windows = (int) $row['os_windows'] === 1;
+    $mac = (int) $row['os_mac'] === 1;
+    if ($windows && $mac) {
+        return 'Win / Mac';
+    }
+    return $windows ? 'Windowsのみ' : 'Macのみ';
+}
+
+/**
+ * U01 カードのクロスプレイタグ。available が true のときだけ緑で表示する
+ * @return array{label: string, available: bool}
+ */
+function crossplay_tag(array $row): array
+{
+    $label = crossplay_label($row);
+    return match ($label) {
+        '○ できる' => ['label' => 'クロスプレイ○', 'available' => true],
+        '× できない' => ['label' => 'クロスプレイ×', 'available' => false],
+        default => ['label' => 'クロスプレイ' . $label, 'available' => false],
+    };
+}
+
 // 一覧・カートで使う「人数 / 遊び方 / 対応OS / クロスプレイ」の 1 行
 function spec_line(array $row): string
 {

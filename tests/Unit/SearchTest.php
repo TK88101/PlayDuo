@@ -155,4 +155,28 @@ final class SearchTest extends TestCase
 
         self::assertSame($expected, search_order_by($criteria['sort']));
     }
+
+    public function testCriteriaSummaryIsEmptyWhenNoConditions(): void
+    {
+        self::assertSame('指定なし', criteria_summary(parse_search_criteria([])['criteria']));
+    }
+
+    public function testCriteriaSummaryListsConditionsInPanelOrder(): void
+    {
+        $criteria = parse_search_criteria([
+            'keyword' => 'ネオン', 'players' => ['5plus', '3-4'], 'os' => ['windows', 'mac'], 'play_style' => ['協力'],
+            'crossplay' => '1', 'genre' => ['MMO'], 'price_min' => '1000', 'price_max' => '5000',
+        ])['criteria'];
+
+        self::assertSame(
+            '「ネオン」／3〜4人・5人以上／Windows・Mac／協力／クロスプレイできる／MMO／¥1,000〜¥5,000',
+            criteria_summary($criteria),
+        );
+    }
+
+    public function testCriteriaSummaryShowsOpenEndedPrice(): void
+    {
+        self::assertSame('¥2,000〜', criteria_summary(parse_search_criteria(['price_min' => '2000'])['criteria']));
+        self::assertSame('〜¥3,000', criteria_summary(parse_search_criteria(['price_max' => '3000'])['criteria']));
+    }
 }

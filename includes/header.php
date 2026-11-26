@@ -14,7 +14,7 @@
 <header>
     <a href="index.php">Play Duo</a>
     <form method="get" action="search.php" class="header-search">
-        <input type="search" name="keyword" placeholder="ゲームを検索">
+        <input type="search" name="keyword" placeholder="キーワードで検索">
         <button type="submit">検索</button>
     </form>
     <nav>

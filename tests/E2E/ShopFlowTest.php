@@ -96,6 +96,16 @@ final class ShopFlowTest extends TestCase
         self::assertStringContainsString('value="3-4" checked', $page->body, '選んだ条件が絞り込みパネルに残る');
     }
 
+    public function testSearchKeepsSortAndShowsConditionSummary(): void
+    {
+        $page = $this->client->get('search.php?sort=new&players%5B%5D=2&os%5B%5D=mac');
+
+        self::assertSame(200, $page->status);
+        self::assertStringContainsString('<select name="sort" form="search-filters">', $page->body, '並び替えは絞り込みフォームと一緒に送る');
+        self::assertStringContainsString('<option value="new" selected>', $page->body);
+        self::assertStringContainsString('条件：2人／Mac', $page->body);
+    }
+
     public function testSearchWithNoHitsAndScriptKeywordIsSafe(): void
     {
         $page = $this->client->get('search.php?keyword=' . rawurlencode('<script>alert(1)</script>'));

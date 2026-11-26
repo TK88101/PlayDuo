@@ -56,6 +56,38 @@ final class FormatTest extends TestCase
         );
     }
 
+    /** @return array<string, array{array<string, int>, string}> */
+    public static function osTagCases(): array
+    {
+        return [
+            '両方'         => [['os_windows' => 1, 'os_mac' => 1], 'Win / Mac'],
+            'Windows のみ' => [['os_windows' => 1, 'os_mac' => 0], 'Windowsのみ'],
+            'Mac のみ'     => [['os_windows' => 0, 'os_mac' => 1], 'Macのみ'],
+        ];
+    }
+
+    #[DataProvider('osTagCases')]
+    public function testOsTagLabel(array $row, string $expected): void
+    {
+        self::assertSame($expected, os_tag_label($row));
+    }
+
+    /** @return array<string, array{array<string, int>, string, bool}> */
+    public static function crossplayTagCases(): array
+    {
+        return [
+            'できる'   => [['os_windows' => 1, 'os_mac' => 1, 'crossplay_flag' => 1], 'クロスプレイ○', true],
+            'できない' => [['os_windows' => 1, 'os_mac' => 1, 'crossplay_flag' => 0], 'クロスプレイ×', false],
+            '片方 OS'  => [['os_windows' => 1, 'os_mac' => 0, 'crossplay_flag' => 1], 'クロスプレイ対象外', false],
+        ];
+    }
+
+    #[DataProvider('crossplayTagCases')]
+    public function testCrossplayTag(array $row, string $label, bool $available): void
+    {
+        self::assertSame(['label' => $label, 'available' => $available], crossplay_tag($row));
+    }
+
     public function testDisplayDatetime(): void
     {
         self::assertSame('2026/11/17 09:05', display_datetime('2026-11-17 09:05:59'));

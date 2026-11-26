@@ -89,7 +89,8 @@ final class LayoutTest extends TestCase
         self::assertStringContainsString('name="genre[]" value="MMO" checked', $html);
         self::assertStringContainsString('name="crossplay" value="1" checked', $html);
         self::assertStringContainsString('name="price_max" min="0" value="5000"', $html);
-        self::assertStringContainsString('<option value="new" selected>', $html);
+        self::assertStringNotContainsString('name="sort"', $html, '並び替えは search.php 側（Figma U02 の一覧右上）');
+        self::assertStringContainsString('id="search-filters"', $html, '並び替えの form 属性が指す先');
         self::assertStringContainsString('value="&quot;&gt;&lt;x&gt;"', $html, 'キーワードはエスケープして戻す');
         self::assertStringContainsString('この条件で絞り込む', $html);
     }

@@ -1,14 +1,15 @@
+/* 色・寸法は Figma「チーム開発B」から採寸（U01_トップ） */
 body {
     margin: 0;
-    background: #45007a;
+    background: #380567;
     color: #fff;
-    font-family: 'Yu Gothic', sans-serif;
+    font-family: 'Noto Sans JP', 'Yu Gothic', sans-serif;
 }
 
 main {
-    width: 95%;
-    max-width: 1500px;
-    margin: 20px auto;
+    max-width: 1328px;
+    margin: 0 auto;
+    padding: 24px 56px 56px;
 }
 
 h1 {
@@ -21,137 +22,428 @@ h2 {
     color: white;
 }
 
-/* トップの「おすすめのゲーム」一覧だけを横並びにする（他ページの section は触らない） */
-section:has(> .product-card) {
+/* ===== U01 トップ ===== */
+.hero-title {
+    margin: 16px 0 4px;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.hero-lead {
+    margin: 0 0 24px;
+    color: #beb4fa;
+    font-size: 17px;
+}
+
+/* 「条件から探す」は白いパネルの中に見出しごと入れる */
+.search-panel {
+    padding: 20px 22px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+}
+
+.search-panel h2 {
+    margin: 0 0 8px;
+    color: #111;
+    font-size: 16px;
+}
+
+.search-panel .search-filters {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 24px 64px;
+}
+
+.search-panel .search-filters legend {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.search-panel .search-filters fieldset label {
+    margin-right: 6px;
+    padding: 3px 12px;
+    border: 1px solid #7f68f6;
+    border-radius: 999px;
+    background: #f5f2fb;
+    color: #111;
+    font-size: 14px;
+}
+
+.search-panel .search-filters fieldset label:has(input:checked) {
+    background: #7f68f6;
+    color: white;
+}
+
+.search-panel .search-filters button[type="submit"] {
+    margin-left: auto;
+    align-self: flex-end;
+    padding: 10px 38px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.recommend h2 {
+    margin: 32px 0 16px;
+    font-size: 20px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
 }
 
-section:has(> .product-card) > h2 {
-    flex-basis: 100%;
-    margin-bottom: 0;
-}
-
 .product-card {
-    background: #f5f5f5;
-    border-radius: 12px;
-    padding: 16px;
-    box-sizing: border-box;
-    flex: 0 1 300px;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
 }
 
+/* Figma の画像枠は横長（約 16:9）。封面は縦長 3:4 なので上寄せで切り取り、人物の顔を残す */
 .product-card img {
     width: 100%;
-    height: 160px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
-    background: #ddd;
-    border-radius: 8%;
+    object-position: center 25%;
+    border-radius: 4px;
+    background: #d9d9d9;
 }
 
 .product-card h3 {
+    margin: 14px 0 8px;
+    color: #111;
     font-size: 18px;
     font-weight: bold;
-    color: #111;
-    margin: 12px 0;
 }
 
-.product-card p {
-    color: #222;
-    margin: 6px 0;
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tag {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #550c9a;
+    color: white;
+    font-size: 13px;
+}
+
+/* Figma どおり「人数・遊び方」と「OS・クロスプレイ」を 2 行に分ける */
+.tag-break {
+    flex-basis: 100%;
+    height: 0;
+}
+
+.tag-ok {
+    background: #458d63;
+}
+
+.tag-muted {
+    background: #6b6b6b;
+}
+
+/* 価格は左、「詳細を見る」は右。カードの高さがそろうよう下端に寄せる */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 16px;
 }
 
 .price {
+    margin: 0;
     color: #111;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
-    margin-top: 10px;
 }
 
 .product-card a {
-    display: inline-block;
-    background: #8e75ff;
+    padding: 9px 26px;
+    border-radius: 6px;
+    background: #7f68f6;
     color: white;
+    font-size: 14px;
+    font-weight: bold;
     text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    float: right;
-    margin-top: 10px;
 }
 
-/* 検索条件フォーム（トップ・検索結果）だけに効かせる。ログイン・会員登録などのフォームは対象外 */
-.search-filters {
-    background: #f5f5f5;
-    color: #222;
-    border: 3px solid #00aaff;
-    border-radius: 16px;
-    padding: 20px 25px;
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
-}
-
+/* ===== 検索条件フォーム（U01・U02 共通の部品）。ログイン・会員登録などのフォームは対象外 ===== */
 .search-filters fieldset {
-    border: none;
     margin: 0;
     padding: 0;
+    border: none;
 }
 
 .search-filters legend {
-    color: #222;
-    font-size: 22px;
+    padding: 0;
     font-weight: bold;
-    margin-bottom: 15px;
 }
 
-.search-filters fieldset label {
-    display: inline-block;
-    position: relative;
-    color: #222;
-    border: 2px solid #8e75ff;
-    border-radius: 20px;
-    padding: 6px 14px;
-    margin-right: 8px;
+.search-filters button[type="submit"] {
+    border: none;
+    background: #7f68f6;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
 }
 
-/* チェックボックス本体は見えなくするが、キーボード操作とフォーム送信は生かす */
-.search-filters fieldset input[type="checkbox"] {
+/* U01 の選択肢は丸いボタン：チェックボックス本体は隠すが、キーボード操作とフォーム送信は生かす */
+.search-panel .search-filters fieldset label {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.search-panel .search-filters fieldset input[type="checkbox"] {
     position: absolute;
-    opacity: 0;
     width: 1px;
     height: 1px;
     margin: 0;
+    opacity: 0;
 }
 
-/* 選択中のボタンを塗りつぶして、何を選んだか分かるようにする */
-.search-filters fieldset label:has(input:checked) {
-    background: #8e75ff;
-    color: white;
-}
-
-.search-filters fieldset label:has(input:focus-visible) {
+.search-panel .search-filters fieldset label:has(input:focus-visible) {
     outline: 3px solid #00aaff;
     outline-offset: 2px;
 }
 
-.search-filters button[type="submit"] {
-    align-self: center;
-    background: #8e75ff;
-    color: white;
-    border: none;
+/* ===== U02 検索結果：左に絞り込み、右に比較一覧（Figma U02） ===== */
+.search-layout {
+    display: grid;
+    grid-template-columns: 285px 1fr;
+    align-items: start;
+    gap: 28px;
+}
+
+.filter-sidebar {
+    padding: 22px 22px 26px;
     border-radius: 8px;
-    padding: 15px 40px;
+    background: #550c9a;
+}
+
+.filter-sidebar h2 {
+    margin: 0 0 14px;
     font-size: 20px;
-    font-weight: bold;
+}
+
+.filter-sidebar .search-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.filter-sidebar .search-filters legend {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* 選択肢は 2 列のチェックボックス */
+.filter-sidebar .search-filters fieldset {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+.filter-sidebar .search-filters fieldset label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
     cursor: pointer;
 }
 
+.filter-sidebar .search-filters input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #7f68f6;
+}
+
+/* キーワード（Figma には無いが対応表 U02 にあるので残す）は見出し＋入力欄 */
+.filter-sidebar .search-filters > label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.filter-sidebar input[type="search"],
+.filter-sidebar input[type="number"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 4px;
+    color: #111;
+    font-size: 14px;
+}
+
+/* 価格は「下限 〜 上限」を 1 行に */
+.filter-sidebar .search-filters fieldset:has(input[type="number"]) {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.filter-sidebar .search-filters fieldset:has(input[type="number"]) .error {
+    grid-column: 1 / -1;
+}
+
+.filter-sidebar .error {
+    margin: 0;
+    color: #ffd0d0;
+    font-size: 13px;
+}
+
+.filter-sidebar .search-filters button[type="submit"] {
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.results-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.result-count {
+    margin: 0;
+    color: white;
+    font-size: 24px;
+}
+
+.results-note {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 28px;
+    margin: 6px 0 0;
+    color: #beb4fa;
+    font-size: 14px;
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: white;
+    color: #111;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.sort-select select {
+    border: none;
+    background: none;
+    color: #111;
+    font-size: 14px;
+}
+
+.no-result {
+    padding: 30px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+    text-align: center;
+}
+
+/* 比較一覧の表（search.php にしかないが、商品行を持つ表だけに効かせる） */
+table:has(.product-row) {
+    width: 100%;
+    overflow: hidden;
+    border-collapse: collapse;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+    font-size: 14px;
+}
+
+table:has(.product-row) th {
+    padding: 12px 10px;
+    background: #f5f2fb;
+    color: #111;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+table:has(.product-row) td {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* 1 列目：サムネイルとゲーム名。Figma の画像枠は横長（約 16:9） */
+.game-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.game-cell img {
+    flex: none;
+    width: 104px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 25%;
+    border-radius: 4px;
+    background: #d9d9d9;
+}
+
+.os-limited {
+    color: #b14434;
+}
+
+.crossplay-ok {
+    color: #458d63;
+}
+
+/* Figma は #a6a6a6 だが白地で読みにくいので、文字のコントラスト 4.5:1 を満たす灰色にする */
+.crossplay-ng {
+    color: #767676;
+}
+
+.product-row td:nth-last-child(2) {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.product-row a {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 4px;
+    background: #7f68f6;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
 header {
-    background: #2a004f;
+    background: #270346;
     padding: 0 30px;
     height: 70px;
     display: flex;
@@ -184,7 +476,7 @@ header > a {
 
 .header-search button {
     margin-left: 10px;
-    background: #8e75ff;
+    background: #7f68f6;
     color: white;
     border: none;
     padding: 0 18px;
