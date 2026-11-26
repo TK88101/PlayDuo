@@ -26,10 +26,12 @@ foreach ($library as $row) {
 <div class="mypage-layout">
     <?php include __DIR__ . '/includes/mypage_menu.php'; ?>
     <section class="mypage-panel">
-        <?php if (!empty($message)): ?>
-            <p class="message"><?= h($message) ?></p>
-        <?php endif; ?>
-        <h2>購入履歴（ライブラリ）</h2>
+        <div class="panel-head">
+            <h2>購入履歴（ライブラリ）</h2>
+            <?php if (!empty($message)): ?>
+                <p class="message"><?= h($message) ?></p>
+            <?php endif; ?>
+        </div>
         <?php if ($library === []): ?>
             <div class="library-empty">
                 <p>購入したゲームはまだありません</p>
@@ -51,16 +53,20 @@ foreach ($library as $row) {
                     </ul>
                 </div>
                 <div class="library-detail">
-                    <img src="assets/games/<?= h($selected['image']) ?>" alt="">
-                    <h3><?= h($selected['name']) ?></h3>
-                    <dl>
-                        <dt>対応OS</dt><dd><?= h(os_detail_label($selected)) ?></dd>
-                        <dt>購入日</dt><dd><?= h(display_date(substr($selected['order_date'], 0, 10))) ?></dd>
-                        <dt>注文番号</dt><dd class="order-number"><?= h($selected['order_number']) ?></dd>
-                        <dt>購入時の価格</dt><dd><?= h(yen($selected['price'])) ?></dd>
-                    </dl>
+                    <div class="library-detail-top">
+                        <img src="assets/games/<?= h($selected['image']) ?>" alt="">
+                        <div class="library-spec">
+                            <h3><?= h($selected['name']) ?></h3>
+                            <dl>
+                                <dt>対応OS</dt><dd><?= h(os_detail_label($selected)) ?></dd>
+                                <dt>購入日</dt><dd><?= h(display_date(substr($selected['order_date'], 0, 10))) ?></dd>
+                                <dt>注文番号</dt><dd class="order-number"><?= h($selected['order_number']) ?></dd>
+                                <dt>購入時の価格</dt><dd><?= h(yen($selected['price'])) ?></dd>
+                            </dl>
+                        </div>
+                    </div>
                     <a href="download.php?id=<?= h($selected['product_id']) ?>" class="button-primary">ダウンロード</a>
-                    <p class="library-note">非公開（販売終了）になったゲームもダウンロードできます。ダウンロードはこのマイページの購入履歴から行えます。</p>
+                    <p class="library-note">※ログイン中・購入済みの場合のみダウンロードできます。非公開になったゲームもダウンロードできます。</p>
                 </div>
             </div>
         <?php endif; ?>

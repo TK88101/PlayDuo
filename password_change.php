@@ -42,20 +42,28 @@ if (is_post()) {
     <?php include __DIR__ . '/includes/mypage_menu.php'; ?>
     <section class="mypage-panel">
         <h2>パスワードの変更</h2>
-        <p>ほかのサービスとは異なるパスワードを設定してください。</p>
-        <form method="post" action="" class="auth-form">
+        <p class="panel-lead">安全にご利用いただくため、ほかのサービスとは異なるパスワードを設定してください。</p>
+        <form method="post" action="" class="mypage-form">
             <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-            <label>現在のパスワード（必須） <input type="password" name="current_password" autocomplete="current-password"></label>
-            <?= error_html($errors, 'current_password') ?>
-            <label>新しいパスワード（必須） <input type="password" name="new_password" autocomplete="new-password"></label>
-            <?= error_html($errors, 'new_password') ?>
-            <p class="form-hint">半角英字・数字をそれぞれ含む8文字以上で入力してください。</p>
-            <label>新しいパスワード（確認）（必須） <input type="password" name="new_password_confirm" autocomplete="new-password"></label>
-            <?= error_html($errors, 'new_password_confirm') ?>
-            <div class="form-actions">
-                <a class="button-sub" href="mypage.php">キャンセル</a>
-                <button type="submit">パスワードを変更する</button>
+            <div class="field">
+                <label for="current_password">現在のパスワード <span class="badge-required">必須</span></label>
+                <input type="password" id="current_password" name="current_password" autocomplete="current-password">
             </div>
+            <div class="field">
+                <label for="new_password">新しいパスワード <span class="badge-required">必須</span></label>
+                <input type="password" id="new_password" name="new_password" autocomplete="new-password">
+                <p class="field-hint">半角英字・数字をそれぞれ含む8文字以上で入力してください。</p>
+            </div>
+            <div class="field">
+                <label for="new_password_confirm">新しいパスワード（確認） <span class="badge-required">必須</span></label>
+                <input type="password" id="new_password_confirm" name="new_password_confirm" autocomplete="new-password">
+                <p class="field-hint">確認のため、新しいパスワードをもう一度入力してください。</p>
+            </div>
+            <div class="form-actions">
+                <a class="button-cancel" href="mypage.php">キャンセル</a>
+                <button type="submit" class="button-save">パスワードを変更する</button>
+            </div>
+            <?php include __DIR__ . '/includes/form_errors.php'; ?>
         </form>
     </section>
 </div>

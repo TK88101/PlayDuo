@@ -40,25 +40,31 @@ if (is_post()) {
     <?php include __DIR__ . '/includes/mypage_menu.php'; ?>
     <section class="mypage-panel">
         <h2>退会</h2>
-        <div class="form-alert">
-            <p class="form-alert-title">退会の前に必ずご確認ください</p>
+        <p class="panel-lead">退会をご希望の方は、以下の注意事項をご確認のうえ、お手続きください。</p>
+        <div class="withdraw-warning">
+            <p class="withdraw-warning-title">退会前に必ずご確認ください</p>
             <ul>
-                <li>退会すると、アカウントは元に戻せません。</li>
-                <li>購入履歴の閲覧・ゲームの再ダウンロードができなくなります。</li>
-                <li>購入済みのゲームの返金はありません。</li>
+                <li>退会すると、アカウントおよび登録した会員情報は復元できません。</li>
+                <li>購入履歴の閲覧や、購入済みゲームの再ダウンロードができなくなります。</li>
+                <li>退会による購入済み商品の返金は行われません。</li>
             </ul>
         </div>
-        <form method="post" action="" class="auth-form">
+        <form method="post" action="" class="mypage-form">
             <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-            <label>現在のパスワード（必須） <input type="password" name="current_password" autocomplete="current-password"></label>
-            <?= error_html($errors, 'current_password') ?>
-            <label class="agree"><input type="checkbox" name="agree" value="1"> 上の注意事項を確認し、退会に同意します</label>
-            <?= error_html($errors, 'agree') ?>
-            <p class="confirm-note">この操作は取り消せません。</p>
-            <div class="form-actions">
-                <a class="button-sub" href="mypage.php">退会せずに戻る</a>
-                <button type="submit">退会する</button>
+            <div class="field">
+                <label for="current_password">現在のパスワード <span class="badge-required">必須</span></label>
+                <input type="password" id="current_password" name="current_password" autocomplete="current-password">
+                <p class="field-hint">本人確認のため、現在のパスワードを入力してください。</p>
             </div>
+            <div class="field">
+                <label class="agree"><input type="checkbox" name="agree" value="1"> 上記の注意事項を確認し、退会することに同意します。</label>
+                <p class="field-warning">「退会する」を押すと退会が完了します。この操作は取り消せません。</p>
+            </div>
+            <div class="form-actions">
+                <a class="button-cancel" href="mypage.php">退会せずに戻る</a>
+                <button type="submit" class="button-danger">退会する</button>
+            </div>
+            <?php include __DIR__ . '/includes/form_errors.php'; ?>
         </form>
     </section>
 </div>

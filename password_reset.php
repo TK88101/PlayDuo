@@ -28,15 +28,17 @@ if (is_post()) {
 }
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
-<h1>パスワード再設定</h1>
-<p>登録したメールアドレスと、認証アプリの6桁 または 復旧コードを入力してください。</p>
-<form method="post" action="">
-    <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-    <label>メールアドレス <input type="email" name="email" value="<?= h($old['email'] ?? '') ?>"></label>
-    <?= error_html($errors, 'email') ?>
-    <label>認証アプリの6桁 または 復旧コード <input type="text" name="code" autocomplete="one-time-code"></label>
-    <?= error_html($errors, 'code') ?>
-    <button type="submit">次へ</button>
-</form>
-<p><a href="login.php">ログインへ戻る</a></p>
+<div class="auth-card">
+    <h1>パスワード再設定</h1>
+    <p class="auth-lead">登録したメールアドレスと、認証アプリの6桁 または 復旧コードを入力してください。</p>
+    <form method="post" action="" class="auth-form">
+        <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
+        <label>メールアドレス <input type="email" name="email" value="<?= h($old['email'] ?? '') ?>"></label>
+        <label>認証アプリの6桁 または 復旧コード <input type="text" name="code" autocomplete="one-time-code"></label>
+        <?php include __DIR__ . '/includes/form_errors.php'; ?>
+        <button type="submit">次へ</button>
+    </form>
+    <p class="auth-switch"><a href="login.php">ログイン画面に戻る</a></p>
+</div>
+<p class="auth-note">※登録したメールアドレスと認証アプリの6桁（または復旧コード）が一致した場合のみ、新しいパスワードを設定できます。<br>※退会済みの会員は再設定できません。</p>
 <?php include __DIR__ . '/includes/footer.php'; ?>

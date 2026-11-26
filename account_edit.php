@@ -49,21 +49,32 @@ $form = $old !== [] ? $old : $member;
     <?php include __DIR__ . '/includes/mypage_menu.php'; ?>
     <section class="mypage-panel">
         <h2>会員情報の変更</h2>
-        <p>変更したい項目を入力し、現在のパスワードを入力して保存してください。氏名・生年月日は変更できません。</p>
-        <form method="post" action="" class="auth-form">
+        <p class="panel-lead">登録内容を変更できます。変更する項目を入力して、保存してください。</p>
+        <form method="post" action="" class="mypage-form">
             <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-            <label>ニックネーム（任意） <input type="text" name="nickname" value="<?= h($form['nickname'] ?? '') ?>" placeholder="2〜20文字"></label>
-            <?= error_html($errors, 'nickname') ?>
-            <label>メールアドレス（必須） <input type="email" name="email" value="<?= h($form['email'] ?? '') ?>"></label>
-            <?= error_html($errors, 'email') ?>
-            <label>電話番号（任意） <input type="tel" name="phone" value="<?= h($form['phone'] ?? '') ?>" placeholder="090-1234-5678"></label>
-            <?= error_html($errors, 'phone') ?>
-            <label>現在のパスワード（必須） <input type="password" name="current_password" autocomplete="current-password"></label>
-            <?= error_html($errors, 'current_password') ?>
-            <div class="form-actions">
-                <a class="button-sub" href="mypage.php">キャンセル</a>
-                <button type="submit">変更を保存する</button>
+            <div class="field">
+                <label for="nickname">ニックネーム <span class="badge-optional">任意</span></label>
+                <input type="text" id="nickname" name="nickname" value="<?= h($form['nickname'] ?? '') ?>" placeholder="デュオプレイヤー">
+                <p class="field-hint">2〜20文字で入力してください。</p>
             </div>
+            <div class="field">
+                <label for="email">メールアドレス <span class="badge-required">必須</span></label>
+                <input type="email" id="email" name="email" value="<?= h($form['email'] ?? '') ?>" placeholder="duo.player@example.com">
+            </div>
+            <div class="field">
+                <label for="phone">電話番号 <span class="badge-optional">任意</span></label>
+                <input type="tel" id="phone" name="phone" value="<?= h($form['phone'] ?? '') ?>" placeholder="090-1234-5678">
+            </div>
+            <div class="field">
+                <label for="current_password">現在のパスワード <span class="badge-required">必須</span></label>
+                <input type="password" id="current_password" name="current_password" autocomplete="current-password">
+                <p class="field-hint">本人確認のため、現在のパスワードを入力してください。</p>
+            </div>
+            <div class="form-actions">
+                <a class="button-cancel" href="mypage.php">キャンセル</a>
+                <button type="submit" class="button-save">変更を保存する</button>
+            </div>
+            <?php include __DIR__ . '/includes/form_errors.php'; ?>
         </form>
     </section>
 </div>

@@ -1508,3 +1508,381 @@ header nav a[href="cart.php"] {
 header nav a:hover {
     color: #b8a2ff;
 }
+
+/* ===== マイページ（Figma U11〜U13・U16）：左に紫のメニュー、右に白いパネル ===== */
+.mypage-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.mypage-menu {
+    padding: 14px;
+    border-radius: 12px;
+    background: #560c9b;
+}
+
+.mypage-menu ul {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mypage-menu a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 6px;
+    color: white;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.mypage-menu a:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mypage-menu a[aria-current="page"] {
+    background: #7f68f6;
+    font-weight: bold;
+}
+
+.mypage-panel {
+    box-sizing: border-box;
+    min-height: 560px;
+    padding: 28px 32px 36px;
+    border-radius: 12px;
+    background: white;
+    color: #111;
+}
+
+.mypage-panel h2,
+.mypage-panel h3 {
+    color: #111;
+}
+
+.mypage-panel h2 {
+    margin: 0 0 18px;
+    font-size: 22px;
+}
+
+.panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 18px;
+}
+
+.panel-head h2 {
+    margin: 0;
+}
+
+.panel-head .message {
+    flex: 1;
+    width: auto;
+    margin: 0;
+}
+
+.panel-lead {
+    margin: -6px 0 22px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* U11 購入履歴（ライブラリ）：左にゲームの一覧、右に選んだゲームの詳細 */
+.library {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+}
+
+.library-list {
+    padding: 14px;
+    border-radius: 8px;
+    background: #f5f2fb;
+}
+
+.library-count {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.library-list ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.library-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    border: 1px solid #e2dcf2;
+    border-radius: 4px;
+    background: white;
+    color: #111;
+    text-decoration: none;
+}
+
+.library-list a:hover {
+    border-color: #b9aaf5;
+}
+
+.library-list a[aria-current="true"] {
+    border: 2px solid #7f68f6;
+    background: #efeafd;
+}
+
+.library-name {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.library-date {
+    color: #666;
+    font-size: 12px;
+}
+
+.library-detail {
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+}
+
+.library-detail-top {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(260px, 1fr);
+    gap: 28px;
+}
+
+.library-detail img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    background: #ddd;
+    object-fit: cover;
+}
+
+.library-spec h3 {
+    margin: 0 0 14px;
+    font-size: 22px;
+}
+
+.library-spec dl {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    margin: 0;
+}
+
+.library-spec dt,
+.library-spec dd {
+    margin: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.library-spec dt {
+    color: #666;
+    font-size: 13px;
+}
+
+.library-spec dd {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.library-detail .button-primary {
+    width: 320px;
+    max-width: 100%;
+    margin-top: 32px;
+}
+
+.library-note {
+    margin: 14px 0 0;
+    color: #666;
+    font-size: 12px;
+}
+
+.library-empty {
+    padding: 48px 0;
+    text-align: center;
+}
+
+.library-empty .button-primary {
+    width: 240px;
+    margin: 16px auto 0;
+}
+
+/* U12・U13・U16 のフォーム：項目名＋必須／任意のバッジ、入力欄、補足 */
+.mypage-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 900px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 740px;
+}
+
+.field > label {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.badge-required,
+.badge-optional {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: #efe9fd;
+    color: #550c9a;
+    font-size: 11px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.field input[type="password"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    color: #111;
+    font-size: 15px;
+}
+
+.field input::placeholder {
+    color: #aaa;
+}
+
+.field-hint {
+    margin: 0;
+    color: #555;
+    font-size: 13px;
+}
+
+.field-warning {
+    margin: 0;
+    color: #b14434;
+    font-size: 13px;
+}
+
+.field .agree {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.field .agree input {
+    width: 18px;
+    height: 18px;
+    accent-color: #7f68f6;
+}
+
+.mypage-form .form-actions {
+    display: flex;
+    gap: 16px;
+    padding-top: 22px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.button-cancel,
+.button-save,
+.button-danger {
+    box-sizing: border-box;
+    width: 214px;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    background: white;
+    color: #111;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button-save {
+    border-color: #7f68f6;
+    background: #7f68f6;
+    color: white;
+}
+
+.button-danger {
+    border-color: #9d3b4b;
+    background: #9d3b4b;
+    color: white;
+}
+
+.form-errors {
+    max-width: 740px;
+    margin: 0;
+}
+
+.form-errors .error {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* U16 退会前の注意 */
+.withdraw-warning {
+    max-width: 1080px;
+    margin-bottom: 26px;
+    padding: 18px 22px;
+    border-radius: 6px;
+    background: #fdf1f2;
+}
+
+.withdraw-warning-title {
+    margin: 0 0 8px;
+    color: #a23a4b;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.withdraw-warning ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #333;
+    font-size: 14px;
+    line-height: 2;
+}
+
+.withdraw-warning li::marker {
+    color: #c0505f;
+}
+
+/* U14・U15 パスワード再設定（ログインと同じカード） */
+.auth-card .auth-lead {
+    margin: -8px 0 14px;
+    color: #555;
+    font-size: 12px;
+    text-align: center;
+}
+
+.auth-form .field-hint {
+    margin: -8px 0 0;
+    font-size: 11px;
+}
+
+.auth-form .form-errors {
+    margin: 0;
+}

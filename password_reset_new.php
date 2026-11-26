@@ -32,15 +32,17 @@ if (is_post()) {
 }
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
-<h1>新しいパスワードの設定</h1>
-<form method="post" action="">
-    <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-    <label>新しいパスワード <input type="password" name="new_password" placeholder="半角英字・数字をそれぞれ含む8文字以上"></label>
-    <?= error_html($errors, 'new_password') ?>
-    <label>新しいパスワード（確認用） <input type="password" name="new_password_confirm"></label>
-    <?= error_html($errors, 'new_password_confirm') ?>
-    <button type="submit">パスワードを再設定する</button>
-</form>
-<p>※ 再設定しても、ログインのロックは解除されません。</p>
-<p><a href="login.php">ログインへ戻る</a></p>
+<div class="auth-card">
+    <h1>パスワード再設定</h1>
+    <form method="post" action="" class="auth-form">
+        <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
+        <label>新しいパスワード <input type="password" name="new_password" autocomplete="new-password"></label>
+        <label>新しいパスワード（確認用） <input type="password" name="new_password_confirm" autocomplete="new-password"></label>
+        <p class="field-hint">半角英字・数字をそれぞれ含む8文字以上</p>
+        <?php include __DIR__ . '/includes/form_errors.php'; ?>
+        <button type="submit">パスワードを再設定する</button>
+    </form>
+    <p class="auth-switch"><a href="login.php">ログイン画面に戻る</a></p>
+</div>
+<p class="auth-note">※再設定後はログイン画面から新しいパスワードでログインしてください。<br>※パスワードを再設定しても、ログインのロックは解除されません（ロック中は10分後に再度お試しください）。</p>
 <?php include __DIR__ . '/includes/footer.php'; ?>
