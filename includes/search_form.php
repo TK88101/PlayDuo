@@ -20,7 +20,7 @@ $sort_labels = ['recommend' => 'おすすめ順', 'new' => '新着順', 'price_a
         <fieldset>
             <legend><?= h($legend) ?></legend>
             <?php foreach ($options as $value => $label): ?>
-                <label><input type="checkbox" name="<?= h($name) ?>[]" value="<?= h($value) ?>"<?= checked(in_array($value, $criteria[$name], true)) ?>> <?= h($label) ?></label>
+                <label><input type="checkbox" name="<?= h($name) ?>[]" value="<?= h($value) ?>"<?= checked(in_array((string) $value, $criteria[$name], true)) ?>> <?= h($label) ?></label>
             <?php endforeach; ?>
         </fieldset>
     <?php endforeach; ?>
