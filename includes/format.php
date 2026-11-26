@@ -63,6 +63,46 @@ function crossplay_tag(array $row): array
     };
 }
 
+// U03「みんなで遊べるか確認」のクロスプレイ欄（Figma U03）。できるときだけ何ができるかを書く
+function crossplay_detail_label(array $row): string
+{
+    $label = crossplay_label($row);
+    return $label === '○ できる' ? '○ Windows と Mac で一緒に遊べる' : $label;
+}
+
+// ---- U03「みんなで遊べるか確認」の表記（Figma U03） ----
+// CERO の対象年齢（表記は CERO の区分名に合わせる。購入可否の判定は age.php の CERO_MIN_AGES）
+const CERO_TARGET_LABELS = ['A' => '全年齢', 'B' => '12才以上', 'C' => '15才以上', 'D' => '17才以上', 'Z' => '18才以上のみ'];
+
+function players_detail_label(array $row): string
+{
+    return players_label($row) . '（パーティー：最大' . (int) $row['max_players'] . '人）';
+}
+
+function play_style_detail_label(array $row): string
+{
+    return $row['play_style'] . 'プレイ';
+}
+
+function os_detail_label(array $row): string
+{
+    return str_replace('・', ' ／ ', os_label($row));
+}
+
+// タグ用「CERO A（全年齢）」。未知の区分は記号だけ出す
+function cero_tag_label(string $rating): string
+{
+    $target = CERO_TARGET_LABELS[$rating] ?? null;
+    return $target === null ? "CERO {$rating}" : "CERO {$rating}（{$target}）";
+}
+
+// 仕様欄用「CERO A（全年齢対象）」
+function cero_detail_label(string $rating): string
+{
+    $target = CERO_TARGET_LABELS[$rating] ?? null;
+    return $target === null ? "CERO {$rating}" : "CERO {$rating}（{$target}対象）";
+}
+
 // 一覧・カートで使う「人数 / 遊び方 / 対応OS / クロスプレイ」の 1 行
 function spec_line(array $row): string
 {

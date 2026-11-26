@@ -442,6 +442,322 @@ table:has(.product-row) td {
     white-space: nowrap;
 }
 
+/* ===== U03 商品詳細（Figma U03）：白いパネルに左＝画像・説明、右＝購入・仕様 ===== */
+.breadcrumb {
+    margin-bottom: 10px;
+    color: #beb4fa;
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    color: #beb4fa;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.product-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 22px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+}
+
+/* 封面は縦長 3:4 なので、Figma の横長枠（16:9）に合わせて上寄せで切り取る */
+#main-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 25%;
+    border-radius: 4px;
+    background: #d9d9d9;
+}
+
+.screenshots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.screenshots img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #d9d9d9;
+}
+
+.product-description h2 {
+    margin: 20px 0 6px;
+    color: #111;
+    font-size: 16px;
+}
+
+.description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.product-info h1 {
+    margin: 0;
+    color: #111;
+    font-size: 30px;
+}
+
+.product-sub {
+    margin: 6px 0 12px;
+    color: #444;
+    font-size: 14px;
+}
+
+.buy-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 18px;
+}
+
+.buy-row .price {
+    font-size: 32px;
+}
+
+.buy-row form {
+    flex: 1;
+}
+
+.buy-row button[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 6px;
+    background: #7f68f6;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.buy-row button[type="submit"]:disabled {
+    background: #b9b9c4;
+    cursor: not-allowed;
+}
+
+.buy-row .note {
+    flex: 0 1 200px;
+    margin: 0;
+    color: #555;
+    font-size: 12px;
+}
+
+/* カートに追加できない理由（Figma の「メッセージ表示欄」） */
+.add-block {
+    margin: 10px 0 0;
+    padding: 8px 12px;
+    border: 1px solid #e3a8a0;
+    border-radius: 4px;
+    background: #fbeeec;
+    color: #b14434;
+    font-size: 14px;
+}
+
+.spec-box {
+    margin-top: 18px;
+    padding: 16px 22px;
+    border-radius: 6px;
+    background: #f5f2fb;
+}
+
+.spec-box h2 {
+    margin: 0 0 6px;
+    color: #111;
+    font-size: 18px;
+}
+
+.spec-box dl {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    margin: 0;
+    font-size: 14px;
+}
+
+.spec-box dt,
+.spec-box dd {
+    margin: 0;
+    padding: 11px 0;
+    border-bottom: 1px solid #e2dcef;
+}
+
+.spec-box dt {
+    color: #555;
+}
+
+.spec-box dd {
+    font-weight: bold;
+}
+
+.spec-box dt:last-of-type,
+.spec-box dd:last-of-type {
+    border-bottom: none;
+}
+
+/* ===== U03-a カート追加完了ポップアップ ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(20, 10, 40, 0.55);
+}
+
+.modal {
+    position: relative;
+    width: min(640px, 100%);
+    padding: 26px 28px 20px;
+    border-radius: 10px;
+    background: white;
+    color: #111;
+}
+
+.modal p {
+    margin: 0;
+}
+
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    color: #333;
+    font-size: 28px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.modal-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e8f3ec;
+    color: #458d63;
+    font-size: 18px;
+}
+
+.modal .modal-lead {
+    margin: 10px 0 16px;
+    color: #444;
+    font-size: 13px;
+}
+
+.modal-item {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    gap: 16px;
+    align-items: start;
+    padding: 14px;
+    border-radius: 6px;
+    background: #f5f2fb;
+    color: #444;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.modal-item img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 25%;
+    border-radius: 4px;
+}
+
+.modal .modal-item-name {
+    margin-bottom: 4px;
+    color: #111;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal-item-os {
+    color: #7f68f6;
+    font-weight: bold;
+}
+
+.modal .modal-item-price {
+    color: #111;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.modal-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 18px 0;
+    font-size: 13px;
+}
+
+.modal .modal-subtotal {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.button-outline,
+.button-primary {
+    padding: 11px;
+    border: 2px solid #7f68f6;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button-outline {
+    background: white;
+    color: #7f68f6;
+}
+
+.button-primary {
+    background: #7f68f6;
+    color: white;
+}
+
+.modal .modal-note {
+    margin-top: 14px;
+    color: #555;
+    font-size: 12px;
+    text-align: center;
+}
+
 header {
     background: #270346;
     padding: 0 30px;

@@ -88,6 +88,41 @@ final class FormatTest extends TestCase
         self::assertSame(['label' => $label, 'available' => $available], crossplay_tag($row));
     }
 
+    public function testCrossplayDetailLabel(): void
+    {
+        self::assertSame('○ Windows と Mac で一緒に遊べる', crossplay_detail_label(['os_windows' => 1, 'os_mac' => 1, 'crossplay_flag' => 1]));
+        self::assertSame('× できない', crossplay_detail_label(['os_windows' => 1, 'os_mac' => 1, 'crossplay_flag' => 0]));
+        self::assertSame('対象外', crossplay_detail_label(['os_windows' => 0, 'os_mac' => 1, 'crossplay_flag' => 1]));
+    }
+
+    public function testDetailLabelsFollowFigmaU03(): void
+    {
+        $row = ['min_players' => 1, 'max_players' => 8, 'play_style' => '協力', 'os_windows' => 1, 'os_mac' => 1];
+
+        self::assertSame('1〜8人（パーティー：最大8人）', players_detail_label($row));
+        self::assertSame('協力プレイ', play_style_detail_label($row));
+        self::assertSame('Windows ／ Mac', os_detail_label($row));
+        self::assertSame('Mac', os_detail_label(['os_windows' => 0, 'os_mac' => 1]));
+    }
+
+    /** @return array<string, array{string, string, string}> */
+    public static function ceroCases(): array
+    {
+        return [
+            'A' => ['A', 'CERO A（全年齢）', 'CERO A（全年齢対象）'],
+            'C' => ['C', 'CERO C（15才以上）', 'CERO C（15才以上対象）'],
+            'Z' => ['Z', 'CERO Z（18才以上のみ）', 'CERO Z（18才以上のみ対象）'],
+            '未知' => ['X', 'CERO X', 'CERO X'],
+        ];
+    }
+
+    #[DataProvider('ceroCases')]
+    public function testCeroLabels(string $rating, string $tag, string $detail): void
+    {
+        self::assertSame($tag, cero_tag_label($rating));
+        self::assertSame($detail, cero_detail_label($rating));
+    }
+
     public function testDisplayDatetime(): void
     {
         self::assertSame('2026/11/17 09:05', display_datetime('2026-11-17 09:05:59'));
