@@ -1660,16 +1660,18 @@ header nav a:hover {
 
 .library-detail-top {
     display: grid;
-    grid-template-columns: minmax(0, 360px) minmax(260px, 1fr);
+    grid-template-columns: minmax(0, 300px) minmax(260px, 1fr);
     gap: 28px;
 }
 
+/* カバー画像は縦長（600×800）なので 3:4 のまま全体を出す。比率の違う画像は上を基準に切る（頭が切れないように） */
 .library-detail img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;
     border-radius: 8px;
     background: #ddd;
     object-fit: cover;
+    object-position: center top;
 }
 
 .library-spec h3 {
