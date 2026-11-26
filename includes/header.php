@@ -1,6 +1,7 @@
 <?php
 // 共通ヘッダー（骨架。見た目は吉松さんの HTML/CSS で置き換える）
 // 使う変数：$page_title, $login_member, $message, $csrf_token, $cart_count
+// 任意：$minimal_header（true でロゴだけ。Figma U04・U05 の会員登録の流れ）、$message_in_page（true でメッセージは画面側が出す）
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -13,6 +14,7 @@
 <body>
 <header>
     <a href="index.php">Play Duo</a>
+<?php if (empty($minimal_header)): ?>
     <form method="get" action="search.php" class="header-search">
         <input type="search" name="keyword" placeholder="キーワードで検索">
         <button type="submit">検索</button>
@@ -31,8 +33,9 @@
             </form>
         <?php endif; ?>
     </nav>
+<?php endif; ?>
 </header>
 <main>
-<?php if (!empty($message)): ?>
+<?php if (!empty($message) && empty($message_in_page)): ?>
     <p class="message"><?= h($message) ?></p>
 <?php endif; ?>

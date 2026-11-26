@@ -224,6 +224,8 @@ cp config/config.sample.php config/config.php
 
 管理者の開発用ログイン：ID `admin` ／ パスワード `admin1234`（ローカル専用）
 
+テスト会員の開発用ログイン：メール `member@example.test` ／ パスワード `member1234`（ローカル専用。`sql/seed.sql` を入れ直すと使える）
+
 ## テストの回し方（PHP 担当向け）
 
 [Composer](https://getcomposer.org/) が必要です。

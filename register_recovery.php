@@ -5,6 +5,7 @@ require __DIR__ . '/includes/bootstrap.php';
 send_no_store_headers();
 
 $page_title = '復旧コード';
+$minimal_header = true;   // 会員登録の流れ（Figma U04・U05 に合わせてロゴだけ）
 
 if (is_post()) {
     verify_csrf_or_fail();
@@ -19,6 +20,7 @@ if (!is_array($recovery_codes)) {
 }
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
+<div class="auth-card auth-card-wide">
 <h1>復旧コード</h1>
 <p>認証アプリが使えなくなったときのパスワード再設定に使います。<strong>この画面でしか表示されません。</strong>コピーまたはテキストで保存して保管してください（各コードは 1 回だけ使えます）。</p>
 <ol id="recovery-codes">
@@ -31,10 +33,11 @@ if (!is_array($recovery_codes)) {
     <button type="button" id="download-codes">テキストで保存</button>
     <span id="codes-status" role="status"></span>
 </p>
-<form method="post" action="">
+<form method="post" action="" class="auth-form">
     <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
     <button type="submit">次へ</button>
 </form>
+</div>
 <script>
     (function () {
         // コピー・保存はブラウザの中だけで行う（サーバーにもう一度取りに行く道は作らない）

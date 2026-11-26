@@ -2,6 +2,8 @@
 -- 何度流しても件数は変わらない（固定 ID の INSERT … ON DUPLICATE KEY UPDATE。DELETE はしない）
 --
 -- 管理者：login_id = admin ／ 開発用パスワード = admin1234（ローカル開発専用。本番では使わない）
+-- テスト会員：メール = member@example.test ／ 開発用パスワード = member1234（ローカル開発専用。2000 年生まれ＝年齢制限なしで全商品を買える）
+--   認証アプリの秘密鍵（パスワード再設定を試すとき用）= 2WBGYUWQLQW7ZMBDNV7FKI7E444WYGE7。認証アプリに「キーを入力」で登録する
 --
 -- 商品：assets/games/products.csv の 8 件を次の変換表で入れる
 --   CSV product_id (g01 など) → product_id は 1〜8 の固定値（file_path に gNN を残す）
@@ -17,6 +19,12 @@ USE playduo;
 INSERT INTO admins (admin_id, login_id, password) VALUES
     (1, 'admin', '$2y$10$GOlIWV8RQvdayO4xqqmW7.jnzuTxZZl30UgFG3R/pIKC4YIWRj2mK')
 ON DUPLICATE KEY UPDATE login_id = VALUES(login_id), password = VALUES(password);
+
+INSERT INTO members (member_id, name, email, password, birth_date, nickname, phone, totp_secret, created_at) VALUES
+    (9001, 'テスト 会員', 'member@example.test', '$2y$12$GCPJ3XWr8lqGroM.BxizEeEWR1s3FNRt1fVEfpj2O8rNaRAjB163S', '2000-01-01',
+     'テストプレイヤー', NULL, '2WBGYUWQLQW7ZMBDNV7FKI7E444WYGE7', '2026-11-26 00:00:00')
+ON DUPLICATE KEY UPDATE name = VALUES(name), email = VALUES(email), password = VALUES(password), birth_date = VALUES(birth_date),
+    nickname = VALUES(nickname), totp_secret = VALUES(totp_secret), withdrawal_flag = 0, login_failure_count = 0, locked_at = NULL;
 
 INSERT INTO products (
     product_id, name, title_en, price, description, genre, capacity, age_rating, developer, release_date,

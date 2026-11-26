@@ -65,6 +65,23 @@ final class LayoutTest extends TestCase
         self::assertStringContainsString('<span class="cart-count">3</span>', $member);
     }
 
+    public function testMinimalHeaderShowsOnlyLogo(): void
+    {
+        // Figma U04・U05：会員登録の流れではロゴだけのヘッダー
+        $html = self::renderHeader(['page_title' => 'x', 'login_member' => null, 'message' => null, 'csrf_token' => 't', 'minimal_header' => true]);
+
+        self::assertStringContainsString('href="index.php"', $html);
+        self::assertStringNotContainsString('action="search.php"', $html);
+        self::assertStringNotContainsString('href="login.php"', $html);
+    }
+
+    public function testHeaderLeavesMessageToPageWhenAsked(): void
+    {
+        $html = self::renderHeader(['page_title' => 'x', 'login_member' => null, 'message' => '完了', 'csrf_token' => 't', 'message_in_page' => true]);
+
+        self::assertStringNotContainsString('class="message"', $html);
+    }
+
     /** @param array<string, mixed> $get */
     private static function renderSearchForm(array $get, bool $full): string
     {

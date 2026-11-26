@@ -5,6 +5,7 @@ require __DIR__ . '/includes/bootstrap.php';
 send_no_store_headers();
 
 $page_title = '認証アプリの設定';
+$minimal_header = true;   // 会員登録の流れ（Figma U04・U05 に合わせてロゴだけ）
 
 if (!isset($_SESSION['register']['input'], $_SESSION['register']['totp_secret'])) {
     redirect('register.php');
@@ -32,16 +33,18 @@ $totp_secret = $_SESSION['register']['totp_secret'];
 $totp_uri = totp_uri($totp_secret, $_SESSION['register']['input']['email']);
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
+<div class="auth-card auth-card-wide">
 <h1>認証アプリの設定</h1>
 <p>認証アプリ（Google Authenticator など）で QR コードを読み取り、表示された 6 桁を入力してください。</p>
 <div id="qrcode" data-uri="<?= h($totp_uri) ?>"></div>
 <p>読み取れないときは次のキーを手入力してください：<code id="totp_secret"><?= h($totp_secret) ?></code></p>
-<form method="post" action="">
+<form method="post" action="" class="auth-form">
     <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
     <label>認証アプリの6桁 <input type="text" name="totp_code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label>
     <?= error_html($errors, 'totp_code') ?>
     <button type="submit">確認する</button>
 </form>
+</div>
 <script src="assets/js/vendor/qrcode.min.js"></script>
 <script>
     (function () {

@@ -123,6 +123,19 @@ final class FormatTest extends TestCase
         self::assertSame($detail, cero_detail_label($rating));
     }
 
+    public function testDisplayJapaneseDate(): void
+    {
+        self::assertSame('2005年4月12日', display_japanese_date('2005-04-12'));
+        self::assertSame('2010年12月1日', display_japanese_date('2010-12-01'));
+    }
+
+    public function testOrUnset(): void
+    {
+        self::assertSame('デュオ', or_unset('デュオ'));
+        self::assertSame('（未入力）', or_unset(null));
+        self::assertSame('（未入力）', or_unset(''));
+    }
+
     public function testDisplayDatetime(): void
     {
         self::assertSame('2026/11/17 09:05', display_datetime('2026-11-17 09:05:59'));

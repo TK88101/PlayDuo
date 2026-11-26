@@ -1,5 +1,9 @@
 /* 色・寸法は Figma「チーム開発B」から採寸（U01_トップ） */
+/* 本文が短くてもフッターを画面の一番下に置く（本文の高さでフッターが上下しないように） */
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
     background: #380567;
     color: #fff;
@@ -7,9 +11,19 @@ body {
 }
 
 main {
-    max-width: 1328px;
+    box-sizing: border-box;
+    flex: 1;
+    width: 100%;
+    max-width: 1440px;
     margin: 0 auto;
     padding: 24px 56px 56px;
+}
+
+body > footer {
+    padding: 16px 56px;
+    color: #a593d8;
+    font-size: 12px;
+    text-align: center;
 }
 
 h1 {
@@ -756,6 +770,267 @@ table:has(.product-row) td {
     color: #555;
     font-size: 12px;
     text-align: center;
+}
+
+/* ===== 会員登録・ログイン（Figma U04・U05・U06）：中央の白いカード ===== */
+.auth-card {
+    box-sizing: border-box;
+    width: min(520px, 100%);
+    margin: 40px auto 0;
+    padding: 28px 40px 32px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+}
+
+.auth-card-wide {
+    width: min(600px, 100%);
+}
+
+.auth-card h1 {
+    margin: 0 0 16px;
+    color: #111;
+    font-size: 24px;
+    text-align: center;
+}
+
+.auth-card p {
+    font-size: 14px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 項目名は太字で上、入力欄は下に全幅 */
+.auth-form > label,
+.auth-form legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="tel"],
+.auth-form select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    background: white;
+    color: #111;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.auth-form input::placeholder {
+    color: #aaa;
+}
+
+/* 生年月日：年・月・日のセレクトを横に並べる */
+.birth-date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 14px;
+}
+
+.birth-date legend {
+    margin-bottom: 6px;
+}
+
+.auth-form .birth-date select {
+    width: 110px;
+}
+
+.auth-form .error {
+    margin: -8px 0 0;
+    color: #af3129;
+    font-size: 13px;
+}
+
+.auth-form button[type="submit"],
+.auth-form button[type="button"] {
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #7f68f6;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-link,
+.auth-switch a {
+    color: #550c9a;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.form-link {
+    align-self: flex-start;
+    margin-top: -4px;
+}
+
+.form-link:hover,
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.auth-card .auth-switch {
+    margin: 18px 0 0;
+    color: #550c9a;
+    font-size: 13px;
+    text-align: center;
+}
+
+.auth-note {
+    width: min(520px, 100%);
+    margin: 18px auto 0;
+    color: #a593d8;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* エラー・ロック中の箱（Figma U06-a・U06-b）。ロック中は E2E が class="locked" を見ている */
+.form-alert,
+.locked {
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border: 1px solid #e7b4b2;
+    border-radius: 3px;
+    background: #fceeed;
+    color: #af3129;
+}
+
+.auth-card .form-alert p,
+.auth-card .locked p {
+    margin: 0;
+    font-size: 12px;
+}
+
+.auth-card .form-alert .form-alert-title,
+.auth-card .locked .form-alert-title {
+    margin-bottom: 2px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 登録完了・再設定完了などのお知らせ（ログインではカードの中、ほかの画面では本文の上） */
+.message {
+    box-sizing: border-box;
+    width: min(600px, 100%);
+    margin: 16px auto;
+    padding: 10px 14px;
+    border: 1px solid #b7d9c5;
+    border-radius: 3px;
+    background: #ecf6f0;
+    color: #2f6b49;
+    font-size: 14px;
+}
+
+.auth-card .message {
+    width: 100%;
+    margin: 0 0 18px;
+}
+
+/* U05 会員登録（確認） */
+.confirm-list {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 18px 12px;
+    margin: 8px 0 0;
+    font-size: 14px;
+}
+
+.confirm-list dt {
+    font-weight: bold;
+}
+
+.confirm-list dd {
+    margin: 0;
+    word-break: break-all;
+}
+
+.password-mask {
+    letter-spacing: 1px;
+}
+
+.auth-card .confirm-note {
+    margin: 22px 0 18px;
+    color: #af3129;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.confirm-actions button {
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #7f68f6;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.confirm-actions .button-sub {
+    background: #f2f0fb;
+    color: #572593;
+}
+
+/* 会員登録の流れ（TOTP 設定・復旧コード）は Figma に無いので同じカードに合わせるだけ */
+.auth-card #qrcode {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.auth-card code,
+.recovery-code {
+    font-family: ui-monospace, Menlo, monospace;
+}
+
+#recovery-codes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 24px;
+    padding: 14px 14px 14px 40px;
+    border-radius: 4px;
+    background: #f5f2fb;
+    font-size: 15px;
+}
+
+.auth-card #copy-codes,
+.auth-card #download-codes {
+    margin-right: 8px;
+    padding: 8px 14px;
+    border: 1px solid #7f68f6;
+    border-radius: 4px;
+    background: white;
+    color: #7f68f6;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 header {

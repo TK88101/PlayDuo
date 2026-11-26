@@ -5,6 +5,7 @@ require __DIR__ . '/includes/bootstrap.php';
 send_no_store_headers();
 
 $page_title = '会員登録';
+$minimal_header = true;   // Figma U04：会員登録の流れはロゴだけのヘッダー
 
 if (is_post()) {
     verify_csrf_or_fail();
@@ -32,23 +33,24 @@ if (is_post()) {
 $this_year = (int) substr(today_string(time()), 0, 4);
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
+<div class="auth-card auth-card-wide">
 <h1>会員登録</h1>
-<form method="post" action="">
+<form method="post" action="" class="auth-form">
     <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
 
-    <label>氏名 <input type="text" name="name" value="<?= h($old['name'] ?? '') ?>"></label>
+    <label>氏名 <input type="text" name="name" placeholder="山田 花子" value="<?= h($old['name'] ?? '') ?>"></label>
     <?= error_html($errors, 'name') ?>
 
-    <label>メールアドレス <input type="email" name="email" value="<?= h($old['email'] ?? '') ?>"></label>
+    <label>メールアドレス <input type="email" name="email" placeholder="example@example.com" value="<?= h($old['email'] ?? '') ?>"></label>
     <?= error_html($errors, 'email') ?>
 
     <label>パスワード <input type="password" name="password" placeholder="半角英字・数字をそれぞれ含む8文字以上"></label>
     <?= error_html($errors, 'password') ?>
 
-    <label>パスワード（確認用） <input type="password" name="password_confirm"></label>
+    <label>パスワード（確認用） <input type="password" name="password_confirm" placeholder="もう一度入力"></label>
     <?= error_html($errors, 'password_confirm') ?>
 
-    <fieldset>
+    <fieldset class="birth-date">
         <legend>生年月日</legend>
         <select name="birth_year">
             <option value="">--</option>
@@ -71,13 +73,14 @@ $this_year = (int) substr(today_string(time()), 0, 4);
     </fieldset>
     <?= error_html($errors, 'birth_date') ?>
 
-    <label>ニックネーム（任意） <input type="text" name="nickname" value="<?= h($old['nickname'] ?? '') ?>"></label>
+    <label>ニックネーム（任意） <input type="text" name="nickname" placeholder="デュオプレイヤー" value="<?= h($old['nickname'] ?? '') ?>"></label>
     <?= error_html($errors, 'nickname') ?>
 
-    <label>電話番号（任意） <input type="tel" name="phone" value="<?= h($old['phone'] ?? '') ?>"></label>
+    <label>電話番号（任意） <input type="tel" name="phone" placeholder="090-1234-5678" value="<?= h($old['phone'] ?? '') ?>"></label>
     <?= error_html($errors, 'phone') ?>
 
     <button type="submit">登録する</button>
 </form>
-<p><a href="login.php">既に会員の方はこちら（ログイン）</a></p>
+<p class="auth-switch">すでに会員の方は <a href="login.php">ログイン</a></p>
+</div>
 <?php include __DIR__ . '/includes/footer.php'; ?>

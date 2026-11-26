@@ -115,6 +115,19 @@ function display_datetime(string $datetime): string
     return str_replace('-', '/', substr($datetime, 0, 16));
 }
 
+// U05：DB・入力の Y-m-d → 「2005年4月12日」
+function display_japanese_date(string $date): string
+{
+    [$y, $m, $d] = array_map('intval', explode('-', substr($date, 0, 10)));
+    return "{$y}年{$m}月{$d}日";
+}
+
+// U05：任意項目が空のときの表示
+function or_unset(?string $value): string
+{
+    return ($value === null || $value === '') ? '（未入力）' : $value;
+}
+
 function display_date(string $date): string
 {
     return str_replace('-', '/', substr($date, 0, 10));
