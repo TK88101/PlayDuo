@@ -29,6 +29,7 @@ final class HtaccessTest extends TestCase
             'sql seed'          => ['sql/seed.sql', true],
             'docs'              => ['docs/plans/x.md', true],
             'git'               => ['.git/config', true],
+            'downloads'         => ['downloads/g01.zip', true],   // 配布ファイルは download.php だけが送る（Plan 2026-11-26 §2.3）
             'qrcode library'    => ['assets/js/vendor/qrcode.min.js', false],
             'game image'        => ['assets/games/both/fps/g02_cover.png', false],
             'page'              => ['register.php', false],

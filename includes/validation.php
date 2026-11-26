@@ -45,10 +45,9 @@ function validate_register_input(array $post, int $now): array
         $errors['name'] = '氏名は' . NAME_MAX_LENGTH . '文字以内で入力してください';
     }
 
-    if ($email === '') {
-        $errors['email'] = 'メールアドレスを入力してください';
-    } elseif (strlen($email) > EMAIL_MAX_LENGTH || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-        $errors['email'] = 'メールアドレスの形式が正しくありません';
+    $emailError = email_error($email);
+    if ($emailError !== null) {
+        $errors['email'] = $emailError;
     }
 
     $errors += validate_new_password(
@@ -62,13 +61,14 @@ function validate_register_input(array $post, int $now): array
         $errors['birth_date'] = $birthDate['error'];
     }
 
-    $nicknameLength = mb_strlen($nickname);
-    if ($nickname !== '' && ($nicknameLength < NICKNAME_MIN_LENGTH || $nicknameLength > NICKNAME_MAX_LENGTH)) {
-        $errors['nickname'] = 'ニックネームは' . NICKNAME_MIN_LENGTH . '〜' . NICKNAME_MAX_LENGTH . '文字で入力してください';
+    $nicknameError = nickname_error($nickname);
+    if ($nicknameError !== null) {
+        $errors['nickname'] = $nicknameError;
     }
 
-    if ($phone !== '' && preg_match(PHONE_PATTERN, $phone) !== 1) {
-        $errors['phone'] = '電話番号は 090-1234-5678 の形で入力してください';
+    $phoneError = phone_error($phone);
+    if ($phoneError !== null) {
+        $errors['phone'] = $phoneError;
     }
 
     return [
@@ -81,6 +81,37 @@ function validate_register_input(array $post, int $now): array
             'phone'      => $phone === '' ? null : $phone,
         ],
     ];
+}
+
+// ---- U04・U12 で共有する項目ごとの判定（Plan 2026-11-26 T4。値は trim_all 済みを受ける。問題なければ null） ----
+function email_error(string $email): ?string
+{
+    if ($email === '') {
+        return 'メールアドレスを入力してください';
+    }
+    if (strlen($email) > EMAIL_MAX_LENGTH || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        return 'メールアドレスの形式が正しくありません';
+    }
+    return null;
+}
+
+// 任意項目：空なら問題なし
+function nickname_error(string $nickname): ?string
+{
+    $length = mb_strlen($nickname);
+    if ($nickname !== '' && ($length < NICKNAME_MIN_LENGTH || $length > NICKNAME_MAX_LENGTH)) {
+        return 'ニックネームは' . NICKNAME_MIN_LENGTH . '〜' . NICKNAME_MAX_LENGTH . '文字で入力してください';
+    }
+    return null;
+}
+
+// 任意項目：空なら問題なし
+function phone_error(string $phone): ?string
+{
+    if ($phone !== '' && preg_match(PHONE_PATTERN, $phone) !== 1) {
+        return '電話番号は 090-1234-5678 の形で入力してください';
+    }
+    return null;
 }
 
 // エラーで戻ったときの入力値（パスワードは戻さない）
