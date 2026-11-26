@@ -25,16 +25,17 @@ set_exception_handler(static function (Throwable $e): void {
 start_app_session();
 send_frame_deny_headers();
 
-$csrf_token = csrf_token($_SESSION);
 $login_member = null;
 $member_id = current_member_id($_SESSION);
 if ($member_id !== null) {
     $login_member = find_login_member(db(), $member_id);
     if ($login_member === null) {
-        // 退会済みなど：ログイン状態を残さない
-        unset($_SESSION['member_id']);
+        // 退会済みなど：ログイン状態も途中の状態も残さず、session ID を作り直す（Plan 2026-11-26 §2.6・Codex P1-8）
+        $_SESSION = [];
+        session_regenerate_id(true);
     }
 }
+$csrf_token = csrf_token($_SESSION);
 // ヘッダーのカート点数（未ログインは 0。表示はログイン中だけ）
 $cart_count = $login_member === null ? 0 : cart_count(db(), (int) $login_member['member_id']);
 $errors = [];

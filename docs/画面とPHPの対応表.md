@@ -5,6 +5,7 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 
 - 元にした資料：画面設計書（利用者・管理者）v1.1（11/4）、DB 定義 `sql/schema.sql`
 - 第2回レビュー対応で追加：U14 の入力項目変更、U17・U18（認証アプリ）
+- 11/26 追加（PHP 第3弾・マイページ）：U11 の `$library` の列と `$selected` の決め方、U11〜U16 共通の `$mypage_active`（下の表に【追加】と書いた行）
 - 11/17 追加（PHP 第2弾・商品〜購入）：ヘッダーの `$cart_count`、U03 の `$add_block`・`$in_cart`・`$cart_summary`、U08 の hidden `confirm_token`、U07・U08 の `$item_count`、U09 の `$reason_counts`、U10 の `$order_number`（下の表に【追加】と書いた行）
 
 ---
@@ -150,6 +151,10 @@ PHP 側はこの名前で値を受け取り、表示します。名前が違う�
 | U10 | `$order`・`$order_items` | 注文（`order_id`・`order_date`）と購入した商品（`product_name`・`price`） |
 | U10 | `$order_number` | 【追加】表示用の注文番号（R＋注文日 yyMMdd＋通し番号。例 R261117001） |
 | U11 | `$library`・`$selected` | 購入済み商品の配列と、選んだ商品1件 |
+| U11 | `$library` の列 | 【追加】`product_id`・`name`（購入時の商品名）・`price`（購入時の価格）・`order_id`・`order_date`・`order_number`（R＋yyMMdd＋注文ID）・`image`・`os_windows`・`os_mac`。並びは購入日時の新しい順 |
+| U11 | `$selected` の決め方 | 【追加】`mypage.php?id=商品ID` の商品（自分の一覧にあるときだけ）。無ければ先頭。0 件なら `null`（「購入したゲームはまだありません」を出す） |
+| U11 | ダウンロード | 【追加】`download.php?id=商品ID` へのリンク（`<a>`）。ボタンにしない |
+| U11〜U16 | `$mypage_active` | 【追加】左メニューの選択中の項目（`library` / `account` / `password` / `withdraw`）。メニューは `includes/mypage_menu.php` を include する |
 | U12 | `$member` | 現在の会員情報（`nickname`・`email`・`phone`） |
 
 ---

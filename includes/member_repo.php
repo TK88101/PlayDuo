@@ -45,6 +45,15 @@ function find_login_member(PDO $pdo, int $memberId): ?array
     return $row === false ? null : $row;
 }
 
+// U12 の初期表示（退会済みは null）
+function find_account(PDO $pdo, int $memberId): ?array
+{
+    $stmt = $pdo->prepare('SELECT nickname, email, phone FROM members WHERE member_id = ? AND withdrawal_flag = 0');
+    $stmt->execute([$memberId]);
+    $row = $stmt->fetch();
+    return $row === false ? null : $row;
+}
+
 function email_exists(PDO $pdo, string $email): bool
 {
     $stmt = $pdo->prepare('SELECT 1 FROM members WHERE email = ?');

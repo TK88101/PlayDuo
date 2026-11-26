@@ -11,6 +11,9 @@ const LOGIN_RETURN_PAGES = [
     'purchase_confirm' => 'purchase_confirm.php',
     'purchase_error'   => 'purchase_error.php',
     'mypage'           => 'mypage.php',
+    'account_edit'     => 'account_edit.php',
+    'password_change'  => 'password_change.php',
+    'withdraw'         => 'withdraw.php',
 ];
 const LOGIN_RETURN_ID_PAGES = [
     'product'           => 'product.php?id=%d',
