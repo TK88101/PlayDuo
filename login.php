@@ -16,6 +16,7 @@ if (is_post()) {
         // 戻り先は session 更新の前に取り出して消す（1 回だけ使う。要確認 Q05・Q06）
         $returnTo = take_login_return($_SESSION);
         renew_session_for_auth();
+        unset($_SESSION['admin_id']);   // 管理者と会員の両方には同時にならない（Plan 2026-11-26-php-admin §2.0）
         $_SESSION['member_id'] = $result['member_id'];
         redirect($returnTo ?? 'index.php');
     }

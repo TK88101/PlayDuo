@@ -67,6 +67,13 @@ final class ShopFixtures
         return (int) $pdo->lastInsertId();
     }
 
+    public static function insertAdmin(PDO $pdo, string $loginId = 'admin', string $password = 'admin1234'): int
+    {
+        $pdo->prepare('INSERT INTO admins (login_id, password) VALUES (?, ?)')
+            ->execute([$loginId, password_hash($password, PASSWORD_DEFAULT)]);
+        return (int) $pdo->lastInsertId();
+    }
+
     public static function addToCart(PDO $pdo, int $memberId, int $productId): void
     {
         $pdo->prepare('INSERT INTO carts (member_id, product_id) VALUES (?, ?)')->execute([$memberId, $productId]);
