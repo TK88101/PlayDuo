@@ -5,6 +5,7 @@ declare(strict_types=1);
 // U01・U02 の検索条件（GET）を読み、SQL の WHERE と ORDER BY を組み立てる。
 // 入力値は SQL 文字列に入れない：列名・並び順・人数条件は下の固定表から選び、値はプレースホルダで渡す
 require_once __DIR__ . '/validation.php';
+require_once __DIR__ . '/format.php';
 
 const KEYWORD_MAX_LENGTH = 50;
 const PRICE_MAX = 1_000_000;
@@ -13,7 +14,7 @@ const PRICE_MAX = 1_000_000;
 const SEARCH_PLAYERS = ['2', '3-4', '5plus'];
 const SEARCH_OS = ['windows', 'mac'];
 const SEARCH_PLAY_STYLES = ['協力', '対戦'];
-const SEARCH_GENRES = ['FPS', 'MMO', 'クラフト', '対戦(PVP)', 'レース'];
+const SEARCH_GENRES = PRODUCT_GENRES;
 
 // 画面に出す名前（U01・U02 の絞り込みパネルと、U02 の「条件：」の行で共用）
 const SEARCH_FILTER_LABELS = [

@@ -72,6 +72,9 @@ function crossplay_detail_label(array $row): string
 
 // ---- U03「みんなで遊べるか確認」の表記（Figma U03） ----
 // CERO の対象年齢（表記は CERO の区分名に合わせる。購入可否の判定は age.php の CERO_MIN_AGES）
+// 商品のジャンル（A06 の選択肢。U01・U02 の絞り込みもこれを使う：A06-014）
+const PRODUCT_GENRES = ['FPS', 'MMO', 'クラフト', '対戦(PVP)', 'レース'];
+
 const CERO_TARGET_LABELS = ['A' => '全年齢', 'B' => '12才以上', 'C' => '15才以上', 'D' => '17才以上', 'Z' => '18才以上のみ'];
 
 function players_detail_label(array $row): string
