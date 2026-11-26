@@ -112,6 +112,15 @@ final class LayoutTest extends TestCase
         self::assertStringContainsString('この条件で絞り込む', $html);
     }
 
+    public function testSearchFormKeepsNumericLikePlayersValueChecked(): void
+    {
+        // '2' は PHP の配列キーで int 2 になるため、厳密比較だと選択状態が消えていた
+        $html = self::renderSearchForm(['players' => ['2']], false);
+
+        self::assertStringContainsString('name="players[]" value="2" checked', $html);
+        self::assertStringContainsString('name="players[]" value="3-4">', $html);
+    }
+
     public function testSearchFormOnTopHasNoGenrePriceOrSort(): void
     {
         $html = self::renderSearchForm([], false);
