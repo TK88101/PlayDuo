@@ -186,4 +186,11 @@ final class ShopRulesTest extends TestCase
         self::assertNull(finished_order_id($session, 't1'));
         self::assertSame(PURCHASE_DONE_KEEP + 2, finished_order_id($session, 't' . (PURCHASE_DONE_KEEP + 2)));
     }
+
+    public function testUnbuyableDetailMessageFollowsFigmaU09(): void
+    {
+        self::assertSame('すでに購入済みのため、再度購入することはできません。', unbuyable_detail_message(['reason' => '購入済み', 'age_rating' => 'A']));
+        self::assertSame('この商品は販売を終了しています。', unbuyable_detail_message(['reason' => '販売終了', 'age_rating' => 'A']));
+        self::assertSame('年齢区分（CERO C）の対象年齢に達していないため購入できません。', unbuyable_detail_message(['reason' => '年齢制限', 'age_rating' => 'C']));
+    }
 }

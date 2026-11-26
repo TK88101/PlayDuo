@@ -69,6 +69,16 @@ function cart_reason_message(array $item): ?string
     };
 }
 
+// U09：商品ごとの理由の説明（Figma U09。カートの「カートから削除してください」は付けない）
+function unbuyable_detail_message(array $item): string
+{
+    return match ($item['reason']) {
+        REASON_PURCHASED => 'すでに購入済みのため、再度購入することはできません。',
+        REASON_PRIVATE   => 'この商品は販売を終了しています。',
+        default          => age_restriction_message((string) $item['age_rating']) . '。',
+    };
+}
+
 // U03：画面を開いた時点で分かる「追加できない理由」（ボタンを押せない表示にする。要確認 Q07）。
 // 判定はカートと同じ cart_item_reason（公開中の商品なので販売終了にはならない）
 function add_block_reason(array $product, bool $purchased, string $birthDate, int $now): ?string

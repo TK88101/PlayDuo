@@ -53,23 +53,25 @@ $page_title = '購入内容確認';
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
 <h1>購入内容の確認</h1>
-<?php foreach ($cart_items as $item): ?>
-    <div class="cart-item">
-        <img src="assets/games/<?= h($item['image']) ?>" alt="">
-        <h2><?= h($item['name']) ?></h2>
-        <p><?= h(spec_line($item)) ?></p>
-        <p class="price"><?= h(yen($item['price'])) ?></p>
+<div class="cart-layout">
+    <div class="cart-panel">
+        <?php $item_mode = 'confirm'; ?>
+        <?php foreach ($cart_items as $item): ?>
+            <?php include __DIR__ . '/includes/cart_item.php'; ?>
+        <?php endforeach; ?>
+        <p class="info-box">・「購入を確定する」を押すと注文が登録され、ダウンロードできるようになります。</p>
     </div>
-<?php endforeach; ?>
-<section class="order-summary">
-    <p>商品数 <?= h($item_count) ?>点</p>
-    <p>合計 <?= h(yen($total)) ?></p>
-    <p>「購入を確定する」を押すと注文が登録され、ダウンロードできるようになります。</p>
-    <form method="post" action="">
-        <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
-        <input type="hidden" name="confirm_token" value="<?= h($confirm_token) ?>">
-        <button type="submit">購入を確定する</button>
-    </form>
-    <a href="cart.php">カートに戻る</a>
-</section>
+
+    <section class="order-summary">
+        <h2>ご注文内容</h2>
+        <p class="summary-row"><span>商品数</span> <span><?= h($item_count) ?>点</span></p>
+        <p class="summary-row summary-total"><span>合計</span> <span><?= h(yen($total)) ?></span></p>
+        <form method="post" action="">
+            <input type="hidden" name="csrf_token" value="<?= h($csrf_token) ?>">
+            <input type="hidden" name="confirm_token" value="<?= h($confirm_token) ?>">
+            <button type="submit" class="button-primary">購入を確定する</button>
+        </form>
+        <a class="button-sub" href="cart.php">カートに戻る</a>
+    </section>
+</div>
 <?php include __DIR__ . '/includes/footer.php'; ?>

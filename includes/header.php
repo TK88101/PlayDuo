@@ -21,7 +21,7 @@
     </form>
     <nav>
         <a href="search.php">ゲームを探す</a>
-        <a href="cart.php">カート<?php if (!empty($login_member)): ?>（<span class="cart-count"><?= h($cart_count ?? 0) ?></span>）<?php endif; ?></a>
+        <a href="cart.php">カート<?php if (!empty($login_member)): ?><span class="cart-count"><?= h($cart_count ?? 0) ?></span><?php endif; ?></a>
         <?php if (empty($login_member)): ?>
             <a href="login.php">ログイン</a>
             <a href="register.php">会員登録</a>

@@ -26,10 +26,11 @@ body > footer {
     text-align: center;
 }
 
+/* 画面タイトル（Figma：紫の背景の上に白の太字。カート・購入確認など） */
 h1 {
-    color: #d9d9d9;
-    font-size: 18px;
-    margin-bottom: 30px;
+    margin: 8px 0 16px;
+    color: white;
+    font-size: 26px;
 }
 
 h2 {
@@ -1033,6 +1034,381 @@ table:has(.product-row) td {
     cursor: pointer;
 }
 
+/* ===== U07 カート・U08 購入確認・U09 購入できない商品（Figma U07〜U09） ===== */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 385px;
+    align-items: start;
+    gap: 28px;
+}
+
+.cart-panel,
+.order-summary {
+    box-sizing: border-box;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+}
+
+.cart-panel {
+    min-height: 420px;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 158px 1fr auto;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding: 14px;
+    border: 1px solid #e3e0ea;
+    border-radius: 6px;
+}
+
+.cart-item img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 25%;
+    border-radius: 4px;
+    background: #d9d9d9;
+}
+
+.cart-item h2 {
+    margin: 2px 0 8px;
+    color: #111;
+    font-size: 18px;
+}
+
+.cart-item-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.cart-item .price {
+    font-size: 20px;
+}
+
+/* 購入できない商品は全体を薄く（理由の文字は読めるよう薄くしない） */
+.cart-item[data-unavailable] img,
+.cart-item[data-unavailable] h2,
+.cart-item[data-unavailable] .tags,
+.cart-item[data-unavailable] .price {
+    opacity: 0.45;
+}
+
+.cannot-buy {
+    margin: 8px 0 0;
+    color: #af3129;
+    font-size: 12px;
+}
+
+.cannot-buy strong {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.link-danger {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #af3129;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.link-danger:hover {
+    text-decoration: underline;
+}
+
+.panel-note {
+    margin: 14px 0 0;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.panel-note a,
+.summary-link {
+    color: #550c9a;
+    text-decoration: none;
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    margin: 18px 0 10px;
+    font-weight: bold;
+}
+
+.panel-heading span:last-child {
+    color: #555;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.info-box {
+    margin: 8px 0 0;
+    padding: 16px 20px;
+    border-radius: 4px;
+    background: #f5f2fb;
+    font-size: 13px;
+}
+
+/* カートが空（U07-a） */
+.cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
+    text-align: center;
+}
+
+.cart-empty p {
+    margin: 0 0 8px;
+    color: #444;
+    font-size: 13px;
+}
+
+.cart-empty .cart-empty-title {
+    color: #111;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.cart-empty .button-primary {
+    margin-top: 10px;
+    padding: 10px 60px;
+}
+
+/* 右の「ご注文内容」「ご確認ください」 */
+.order-summary h2 {
+    margin: 0 0 14px;
+    color: #111;
+    font-size: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 6px 0;
+    font-size: 14px;
+}
+
+.summary-total {
+    margin: 8px 0 18px;
+    padding-top: 14px;
+    border-top: 1px solid #e3e0ea;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.summary-total span:last-child {
+    font-size: 24px;
+}
+
+.summary-sub {
+    color: #555;
+    font-size: 13px;
+}
+
+.summary-alert {
+    color: #af3129;
+    font-weight: bold;
+}
+
+.summary-text {
+    margin: 14px 0;
+    padding-top: 14px;
+    border-top: 1px solid #e3e0ea;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.order-summary form {
+    margin: 0;
+}
+
+/* 主ボタン・副ボタン（a でも button でも同じ見た目） */
+.button-primary,
+.button-sub {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button-primary {
+    background: #7f68f6;
+    color: white;
+}
+
+.button-primary.is-disabled {
+    background: #c9c8d3;
+    cursor: not-allowed;
+}
+
+.button-sub {
+    margin-top: 10px;
+    background: #f2f0fb;
+    color: #572593;
+}
+
+.summary-link {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.summary-link:hover {
+    text-decoration: underline;
+}
+
+.summary-note {
+    margin: 12px 0 0;
+    color: #555;
+    font-size: 11px;
+}
+
+/* U09：商品ごとの理由の帯（購入済み＝紫、年齢制限・販売終了＝赤） */
+.reason-strip {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.reason-badge {
+    padding: 2px 12px;
+    border-radius: 999px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.reason-purchased {
+    background: #f5f2fb;
+}
+
+.reason-purchased .reason-badge {
+    background: #550c9a;
+}
+
+.reason-blocked {
+    background: #fceeed;
+}
+
+.reason-blocked .reason-badge {
+    background: #af3129;
+}
+
+.error-summary {
+    margin-bottom: 0;
+}
+
+.cart-panel .form-alert p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.cart-panel .form-alert .form-alert-title {
+    margin-bottom: 4px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ===== U10 購入完了 ===== */
+.complete-card {
+    box-sizing: border-box;
+    width: min(830px, 100%);
+    margin: 32px auto 0;
+    padding: 30px 40px 40px;
+    border-radius: 8px;
+    background: white;
+    color: #111;
+}
+
+.complete-card h1 {
+    margin: 0;
+    color: #111;
+    font-size: 26px;
+    text-align: center;
+}
+
+.complete-meta {
+    margin: 8px 0 24px;
+    color: #444;
+    font-size: 14px;
+    text-align: center;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 14px;
+    padding: 14px;
+    border: 1px solid #e3e0ea;
+    border-radius: 6px;
+}
+
+.order-item img {
+    width: 158px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center 25%;
+    border-radius: 4px;
+}
+
+.order-item p {
+    margin: 0;
+    color: #444;
+    font-size: 13px;
+}
+
+.order-item .order-item-name {
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.complete-text {
+    margin: 22px 0 18px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.complete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.complete-actions .button-primary,
+.complete-actions .button-sub {
+    width: 220px;
+    margin: 0;
+    font-size: 15px;
+}
+
 header {
     background: #270346;
     padding: 0 30px;
@@ -1078,7 +1454,7 @@ header > a {
 header nav {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 28px;
     margin-left: auto;
 }
 
@@ -1087,6 +1463,46 @@ header nav a {
     text-decoration: none;
     font-size: 14px;
     white-space: nowrap;
+}
+
+/* ログアウトは form のボタンだが、見た目はほかのメニューと同じ文字リンクにする（Figma） */
+header nav form {
+    margin: 0;
+}
+
+header nav button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: white;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+header nav button:hover {
+    color: #b8a2ff;
+}
+
+/* カート内の商品数は「カート」の右上の小さな丸（Figma U03-a） */
+header nav a[href="cart.php"] {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -14px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: #7f68f6;
+    color: white;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
 }
 
 header nav a:hover {

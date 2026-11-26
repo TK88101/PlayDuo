@@ -213,12 +213,12 @@ final class ShopFlowTest extends TestCase
         $cart = $this->client->get('cart.php');
         self::assertSame(3, preg_match_all('/class="cart-item"/', $cart->body));
         self::assertStringContainsString('この商品は販売を終了しています。カートから削除してください。', $cart->body);
-        self::assertStringContainsString('商品数 2点', $cart->body, 'U07-005');
-        self::assertStringContainsString('合計 ¥5,780', $cart->body);
+        self::assertStringContainsString('商品数 2点', self::text($cart->body), 'U07-005');
+        self::assertStringContainsString('合計 ¥5,780', self::text($cart->body));
 
         $res = $this->client->post('cart.php', ['csrf_token' => $cart->csrfToken(), 'action' => 'delete', 'product_id' => '2']);
         self::assertRedirect($res, 'cart.php');
-        self::assertStringContainsString('合計 ¥2,480', $this->client->get('cart.php')->body);
+        self::assertStringContainsString('合計 ¥2,480', self::text($this->client->get('cart.php')->body));
 
         foreach (['5', '4'] as $id) {
             $this->client->post('cart.php', ['csrf_token' => $cart->csrfToken(), 'action' => 'delete', 'product_id' => $id]);
@@ -238,8 +238,8 @@ final class ShopFlowTest extends TestCase
 
         $cart = $this->client->get('cart.php');
 
-        self::assertStringContainsString('商品数 0点', $cart->body);
-        self::assertStringContainsString('合計 ¥0', $cart->body);
+        self::assertStringContainsString('商品数 0点', self::text($cart->body));
+        self::assertStringContainsString('合計 ¥0', self::text($cart->body));
         self::assertStringContainsString('購入できる商品がないため、購入手続きには進めません', $cart->body);
         self::assertStringNotContainsString('href="purchase_confirm.php"', $cart->body);
     }
@@ -253,7 +253,7 @@ final class ShopFlowTest extends TestCase
         $this->login();
 
         $page = $this->client->get('purchase_confirm.php');
-        self::assertStringContainsString('合計 ¥5,780', $page->body);
+        self::assertStringContainsString('合計 ¥5,780', self::text($page->body));
         self::assertStringContainsString('「購入を確定する」を押すと注文が登録され、ダウンロードできるようになります。', $page->body);
 
         $token = $this->openConfirm();
@@ -353,5 +353,11 @@ final class ShopFlowTest extends TestCase
 
         self::assertSame(400, $res->status);
         self::assertSame(0, ShopFixtures::count($this->pdo, 'orders'));
+    }
+
+    // 画面に見えている文字だけで確かめる（Figma で「項目名は左・値は右」に分けたため、タグをまたいだ文字列を比べる）
+    private static function text(string $html): string
+    {
+        return (string) preg_replace('/\s+/u', ' ', strip_tags($html));
     }
 }

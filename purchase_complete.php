@@ -18,18 +18,22 @@ $order_number = format_order_number((int) $order['order_id'], $order['order_date
 $page_title = '購入完了';
 ?>
 <?php include __DIR__ . '/includes/header.php'; ?>
-<h1>購入が完了しました</h1>
-<dl>
-    <dt>注文番号</dt><dd class="order-number"><?= h($order_number) ?></dd>
-    <dt>購入日時</dt><dd><?= h(display_datetime($order['order_date'])) ?></dd>
-</dl>
-<?php foreach ($order_items as $item): ?>
-    <div class="order-item">
-        <img src="assets/games/<?= h($item['image']) ?>" alt="">
-        <p><?= h($item['product_name']) ?>（<?= h(os_label($item)) ?>）</p>
+<div class="complete-card">
+    <h1>購入が完了しました</h1>
+    <p class="complete-meta">注文番号：<span class="order-number"><?= h($order_number) ?></span>　／　購入日時：<?= h(display_datetime($order['order_date'])) ?></p>
+    <?php foreach ($order_items as $item): ?>
+        <div class="order-item">
+            <img src="assets/games/<?= h($item['image']) ?>" alt="">
+            <div>
+                <p class="order-item-name"><?= h($item['product_name']) ?></p>
+                <p>対応OS：<?= h(os_detail_label($item)) ?></p>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <p class="complete-text">購入したゲームは、マイページの「購入履歴（ライブラリ）」からダウンロードできます。</p>
+    <div class="complete-actions">
+        <a class="button-primary" href="mypage.php">マイページでダウンロード</a>
+        <a class="button-sub" href="index.php">トップへ戻る</a>
     </div>
-<?php endforeach; ?>
-<p>購入したゲームはマイページからダウンロードできます。</p>
-<a href="mypage.php">マイページでダウンロード</a>
-<a href="index.php">トップへ戻る</a>
+</div>
 <?php include __DIR__ . '/includes/footer.php'; ?>
