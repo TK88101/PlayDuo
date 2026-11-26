@@ -8,3 +8,8 @@ config/config.php
 vendor/
 build/
 .phpunit.cache/
+
+# 管理画面でアップロードした画像・配布ファイル（各自の環境だけに置く）
+assets/games/uploads/*
+!assets/games/uploads/.gitkeep
+downloads/p*.zip

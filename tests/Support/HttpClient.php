@@ -29,6 +29,26 @@ final class HttpClient
         return $this->request('POST', $path, http_build_query($fields));
     }
 
+    /**
+     * ファイル付きの POST（multipart/form-data）。
+     * @param array<string, string> $fields
+     * @param array<string, array{0: string, 1: string, 2: string}> $files name => [ファイル名, 中身, Content-Type]
+     */
+    public function postMultipart(string $path, array $fields, array $files): HttpResponse
+    {
+        $boundary = 'playduo' . bin2hex(random_bytes(8));
+        $body = '';
+        foreach ($fields as $name => $value) {
+            $body .= "--{$boundary}\r\nContent-Disposition: form-data; name=\"{$name}\"\r\n\r\n{$value}\r\n";
+        }
+        foreach ($files as $name => [$filename, $content, $type]) {
+            $body .= "--{$boundary}\r\nContent-Disposition: form-data; name=\"{$name}\"; filename=\"{$filename}\"\r\n"
+                . "Content-Type: {$type}\r\n\r\n{$content}\r\n";
+        }
+        $body .= "--{$boundary}--\r\n";
+        return $this->request('POST', $path, $body, "multipart/form-data; boundary={$boundary}");
+    }
+
     /** @return array<string, string> */
     public function cookies(): array
     {
@@ -41,7 +61,12 @@ final class HttpClient
         $this->cookies = $cookies;
     }
 
-    private function request(string $method, string $path, ?string $body): HttpResponse
+    private function request(
+        string $method,
+        string $path,
+        ?string $body,
+        string $contentType = 'application/x-www-form-urlencoded',
+    ): HttpResponse
     {
         $headers = [];
         if ($this->cookies !== []) {
@@ -52,7 +77,7 @@ final class HttpClient
             $headers[] = 'Cookie: ' . implode('; ', $pairs);
         }
         if ($body !== null) {
-            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+            $headers[] = 'Content-Type: ' . $contentType;
         }
         $context = stream_context_create(['http' => [
             'method'          => $method,
