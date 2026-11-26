@@ -104,16 +104,18 @@ function purge_stale_uploads(string $dir, int $now): void
 }
 
 // 一時フォルダ（Web 公開フォルダの外）。無ければ作る。
-// 共有の一時領域なので、自分の持ち物で他人が書けない（0700）ときだけ使う（セキュリティ評審 LOW-5）
+// macOS・Linux は共有の一時領域なので、実行ユーザーごとに分け（Apache は daemon、テストの php -S は自分のユーザー）、
+// 自分の持ち物で他人が書けない（0700）ときだけ使う（セキュリティ評審 LOW-5）。
+// Windows は posix 拡張が無いが、一時領域がユーザーごとなのでその確認は省く（Codex review P1）
 function admin_upload_tmp_dir(?string $dir = null): string
 {
-    // 実行ユーザーごとに分ける（Apache は daemon、テストの php -S は自分のユーザーで動き、同じ名前だと片方が使えない）
-    $dir ??= rtrim(sys_get_temp_dir(), '/') . '/playduo_admin_uploads_' . posix_geteuid();
+    $uid = function_exists('posix_geteuid') ? posix_geteuid() : null;
+    $dir ??= rtrim(sys_get_temp_dir(), '/\\') . '/playduo_admin_uploads' . ($uid === null ? '' : "_{$uid}");
     if (!is_dir($dir) && !mkdir($dir, 0700, true) && !is_dir($dir)) {
         throw new RuntimeException('一時フォルダを作れませんでした');
     }
     clearstatcache(true, $dir);
-    if (is_link($dir) || fileowner($dir) !== posix_geteuid() || (fileperms($dir) & 0077) !== 0) {
+    if ($uid !== null && (is_link($dir) || fileowner($dir) !== $uid || (fileperms($dir) & 0077) !== 0)) {
         throw new RuntimeException('一時フォルダの持ち主か権限が想定と違います');
     }
     return $dir;
