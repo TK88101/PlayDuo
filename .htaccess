@@ -1,8 +1,9 @@
 # 開発用のファイルは Web から見せない（Apache 用。php -S には効かない）
 # このフォルダ直下からの相対パスで判定する（assets/js/vendor/ などは対象外）
+# 大文字小文字は区別しない（NC・(?i)）：macOS・Windows では DOWNLOADS/ でも同じフォルダが開くため（セキュリティ評審 HIGH-1）
 RewriteEngine On
-RewriteRule ^(vendor|tests|sql|docs|build|downloads|\.git)(/|$) - [R=404,L]
+RewriteRule ^(vendor|tests|sql|docs|build|downloads|\.git)(/|$) - [R=404,L,NC]
 
-<FilesMatch "^(composer\.(json|lock)|phpunit\.xml|README\.md)$">
+<FilesMatch "(?i)^(composer\.(json|lock)|phpunit\.xml|README\.md)$">
     Require all denied
 </FilesMatch>

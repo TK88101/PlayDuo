@@ -16,8 +16,9 @@ final class HtaccessTest extends TestCase
     private static function blockPattern(): string
     {
         $htaccess = (string) file_get_contents(__DIR__ . '/../../.htaccess');
-        self::assertSame(1, preg_match('/^RewriteRule\s+(\S+)\s+-\s+\[R=404/m', $htaccess, $m), 'RewriteRule が見つからない');
-        return '#' . $m[1] . '#';
+        self::assertSame(1, preg_match('/^RewriteRule\s+(\S+)\s+-\s+\[([^\]]*R=404[^\]]*)\]/m', $htaccess, $m), 'RewriteRule が見つからない');
+        // macOS・Windows のファイルシステムは大文字小文字を区別しないので、NC（区別しない）が無いと DOWNLOADS/ で抜けられる
+        return '#' . $m[1] . '#' . (preg_match('/(^|,)NC(,|$)/', $m[2]) === 1 ? 'i' : '');
     }
 
     /** @return array<string, array{string, bool}> */
@@ -29,7 +30,10 @@ final class HtaccessTest extends TestCase
             'sql seed'          => ['sql/seed.sql', true],
             'docs'              => ['docs/plans/x.md', true],
             'git'               => ['.git/config', true],
-            'downloads'         => ['downloads/g01.zip', true],   // 配布ファイルは download.php だけが送る（Plan 2026-11-26 §2.3）
+            'downloads'         => ['downloads/g01.zip', true],
+            'downloads 大文字'  => ['DOWNLOADS/g01.zip', true],   // セキュリティ評審 HIGH-1（大文字で .htaccess を抜けられた）
+            'sql 大文字'        => ['SQL/schema.sql', true],
+            'git 大文字'        => ['.GIT/HEAD', true],   // 配布ファイルは download.php だけが送る（Plan 2026-11-26 §2.3）
             'qrcode library'    => ['assets/js/vendor/qrcode.min.js', false],
             'game image'        => ['assets/games/both/fps/g02_cover.png', false],
             'page'              => ['register.php', false],

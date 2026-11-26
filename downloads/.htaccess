@@ -1,0 +1,3 @@
+# 配布ファイルは download.php が本人の購入を確かめてから送る。Web から直接は取らせない。
+# URL の大文字小文字に関係なく、このフォルダの実体に対して効く（ルート .htaccess の RewriteRule と二重の守り）
+Require all denied
