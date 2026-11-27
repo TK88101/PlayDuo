@@ -29,9 +29,9 @@ $full_filters = true;
                     <span>メンバー全員で遊べるかを横並びで比べられます</span>
                 </p>
             </div>
-            <!-- form 属性で左の絞り込みフォームと一緒に送る（Figma U02 の右上の位置に置くため） -->
+            <!-- form 属性で左の絞り込みフォームと一緒に送る（Figma U02 の右上の位置に置くため）。選んだ時点で送信し、JS が無効なら「この条件で絞り込む」で送る -->
             <label class="sort-select">並び替え：
-                <select name="sort" form="search-filters">
+                <select name="sort" form="search-filters" onchange="this.form.requestSubmit()">
                     <?php foreach ($sort_labels as $value => $label): ?>
                         <option value="<?= h($value) ?>"<?= $criteria['sort'] === $value ? ' selected' : '' ?>><?= h($label) ?></option>
                     <?php endforeach; ?>
@@ -49,7 +49,7 @@ $full_filters = true;
         <tbody>
             <?php foreach ($products as $p): ?>
                 <tr class="product-row">
-                    <td><div class="game-cell"><img src="assets/games/<?= h($p['image']) ?>" alt=""> <span><?= h($p['name']) ?></span></div></td>
+                    <td><a class="game-cell" href="product.php?id=<?= h($p['product_id']) ?>"><img src="assets/games/<?= h($p['image']) ?>" alt=""> <span><?= h($p['name']) ?></span></a></td>
                     <td><?= h($p['genre']) ?></td>
                     <td><?= h(players_label($p)) ?></td>
                     <td><?= h($p['play_style']) ?></td>

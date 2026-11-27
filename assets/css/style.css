@@ -400,12 +400,19 @@ table:has(.product-row) td {
     vertical-align: middle;
 }
 
-/* 1 列目：サムネイルとゲーム名。Figma の画像枠は横長（約 16:9） */
+/* 1 列目：サムネイルとゲーム名。Figma の画像枠は横長（約 16:9）。全体が詳細へのリンク */
 .game-cell {
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: bold;
+    color: inherit;
+    text-decoration: none;
+}
+
+.game-cell:hover span,
+.game-cell:focus-visible span {
+    text-decoration: underline;
 }
 
 .game-cell img {
@@ -436,7 +443,8 @@ table:has(.product-row) td {
     white-space: nowrap;
 }
 
-.product-row a {
+/* 「詳細」ボタン（1 列目の画像・ゲーム名のリンクは除く） */
+.product-row a:not(.game-cell) {
     display: inline-block;
     padding: 6px 14px;
     border-radius: 4px;

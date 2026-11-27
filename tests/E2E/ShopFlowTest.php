@@ -94,6 +94,7 @@ final class ShopFlowTest extends TestCase
         self::assertStringContainsString('検索結果 2件', $page->body);
         self::assertSame(2, preg_match_all('/class="product-row"/', $page->body));
         self::assertStringContainsString('value="3-4" checked', $page->body, '選んだ条件が絞り込みパネルに残る');
+        self::assertSame(2, preg_match_all('/<a class="game-cell" href="product\.php\?id=\d+">\s*<img [^>]+>\s*<span>[^<]+<\/span>\s*<\/a>/', $page->body), '画像とゲーム名からも詳細へ行ける');
     }
 
     public function testSearchKeepsSortAndShowsConditionSummary(): void
@@ -101,7 +102,7 @@ final class ShopFlowTest extends TestCase
         $page = $this->client->get('search.php?sort=new&players%5B%5D=2&os%5B%5D=mac');
 
         self::assertSame(200, $page->status);
-        self::assertStringContainsString('<select name="sort" form="search-filters">', $page->body, '並び替えは絞り込みフォームと一緒に送る');
+        self::assertStringContainsString('<select name="sort" form="search-filters" onchange="this.form.requestSubmit()">', $page->body, '並び替えは絞り込みフォームと一緒に、選んだ時点で送る');
         self::assertStringContainsString('<option value="new" selected>', $page->body);
         self::assertStringContainsString('条件：2人／Mac', $page->body);
     }
